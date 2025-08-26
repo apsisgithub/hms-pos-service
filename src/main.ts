@@ -9,75 +9,75 @@ import { CustomResponseInterceptor } from "./interceptors/custom-response.interc
 declare const module: any;
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-    app.enableCors({
-        origin: "*",
-        allowedHeaders: "*",
-        credentials: true,
-    });
+  app.enableCors({
+    origin: "*",
+    allowedHeaders: "*",
+    credentials: true,
+  });
 
-    const config = new DocumentBuilder()
-        .setTitle("Hotel Management")
-        .setDescription("")
-        .setVersion("1.0")
-        .addTag("HMS API LIST")
+  const config = new DocumentBuilder()
+    .setTitle("Restaurant POS Service")
+    .setDescription("")
+    .setVersion("1.0")
+    .addBearerAuth({
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT",
+      in: "header",
+      name: "Authorization",
+      description: "Enter your Bearer token",
+    })
+    .addSecurityRequirements("bearer")
+    .addServer("/pos")
+    .build();
 
-        .addBearerAuth({
-            type: "http",
-            scheme: "bearer",
-            bearerFormat: "JWT",
-            in: "header",
-            name: "Authorization",
-            description: "Enter your Bearer token",
-        })
-        .addSecurityRequirements("bearer")
-        .addServer("/core")
-        .build();
-    const document = SwaggerModule.createDocument(app, config, {
-        ignoreGlobalPrefix: false,
-    });
+  const document = SwaggerModule.createDocument(app, config, {
+    ignoreGlobalPrefix: false,
+  });
 
-    const swaggerAuth = basicAuth({
-        users: { admin: "password" },
-        challenge: true,
-        unauthorizedResponse: "Unauthorized",
-    });
-    app.use("/api/docs", swaggerAuth);
-    SwaggerModule.setup("api/docs", app, document, {
-        swaggerOptions: {
-            docExpansion: "none",
-            persistAuthorization: false,
-        },
-    });
+  const swaggerAuth = basicAuth({
+    users: { admin: "password" },
+    challenge: true,
+    unauthorizedResponse: "Unauthorized",
+  });
 
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            transform: true,
-            forbidNonWhitelisted: true,
-            transformOptions: {
-                enableImplicitConversion: true,
-            },
-        })
-    );
+  app.use("/api/docs", swaggerAuth);
+  SwaggerModule.setup("api/docs", app, document, {
+    swaggerOptions: {
+      docExpansion: "none",
+      persistAuthorization: false,
+    },
+  });
 
-    app.useGlobalInterceptors(new CustomResponseInterceptor());
-    app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    })
+  );
 
-    app.setGlobalPrefix("core");
+  app.useGlobalInterceptors(new CustomResponseInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
-    const PORT = process.env.PORT || 3001;
-    await app.listen(PORT);
-    Logger.log(`🚀Application is Running on: http://localhost:${PORT}`);
-    Logger.log(
-        `🚀Swagger Documentation is Running on: http://localhost:${PORT}/api/docs`
-    );
+  app.setGlobalPrefix("pos");
 
-    if (module.hot) {
-        module.hot.accept();
-        module.hot.dispose(() => app.close());
-    }
+  const PORT = process.env.PORT || 3004;
+  await app.listen(PORT);
+  Logger.log(`🚀Application is Running on: http://localhost:${PORT}`);
+  Logger.log(
+    `🚀Swagger Documentation is Running on: http://localhost:${PORT}/api/docs`
+  );
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 
 bootstrap();
