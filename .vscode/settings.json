@@ -45,6 +45,7 @@
     "targetvalue",
     "TINYINT",
     "unnoti",
+    "uuidv",
     "wcdr"
   ]
 }

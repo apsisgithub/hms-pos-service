@@ -1,0 +1,35 @@
+import { IsNotEmpty, IsOptional, IsNumber, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+
+export class CreateCategoryDto {
+  @ApiProperty({
+    description: "The name of the category",
+    example: "Electronics",
+  })
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiPropertyOptional({
+    description: "category images",
+  })
+  @IsOptional()
+  @IsString()
+  picture?: string;
+
+  @ApiPropertyOptional({
+    description: "Parent category ID if this is a subcategory",
+    example: 0,
+  })
+  @IsOptional()
+  @IsNumber()
+  parentId?: number;
+
+  @ApiPropertyOptional({
+    description: "Identifier for the SBU in the SaaS application",
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  sbu_id?: number;
+}
