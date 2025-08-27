@@ -36,6 +36,10 @@ import { MasterPayments } from "src/entities/master/master_payments.entity";
 import { UniqueSoftDelete } from "src/common/decorators/unique-sof-delete.decorator";
 import { MasterFolios } from "src/entities/master/master_folios.entity";
 import { MasterCharges } from "./master_charges.entity";
+import { PosTable } from "../pos/table.entity";
+import { PosWaiter } from "../pos/waiter.entity";
+import { PosOutlet } from "../pos/outlet.entity";
+import { PosCounter } from "../pos/counter.entity";
 
 export enum MasterSbuStatus {
   Active = "Active",
@@ -230,4 +234,17 @@ export class MasterSbu {
 
   @OneToMany(() => MasterFolios, (folio) => folio.sbu)
   folios: MasterFolios[];
+
+  //relation added for pos
+  @OneToMany(() => PosTable, (table) => table.sbu)
+  tables: PosTable[];
+
+  @OneToMany(() => PosWaiter, (waiter) => waiter.sbu)
+  waiters: PosWaiter[];
+
+  @OneToMany(() => PosOutlet, (outlet) => outlet.sbu)
+  outlets: PosOutlet[];
+
+  @OneToMany(() => PosCounter, (counter) => counter.sbu)
+  counters: PosCounter[];
 }

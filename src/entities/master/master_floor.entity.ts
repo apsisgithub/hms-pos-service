@@ -12,6 +12,7 @@ import {
 import { MasterSbu } from "src/entities/master/master_sbu.entity";
 import { MasterBuilding } from "src/entities/master/master_building.entity";
 import { MasterRoom } from "src/entities/master/master_room.entity";
+import { PosTable } from "../pos/table.entity";
 
 export enum FloorStatus {
   Active = "Active",
@@ -75,4 +76,7 @@ export class MasterFloor {
 
   @OneToMany(() => MasterRoom, (room) => room.floor)
   rooms: MasterRoom[];
+
+  @OneToMany(() => PosTable, (table) => table.floor)
+  tables: PosTable[];
 }

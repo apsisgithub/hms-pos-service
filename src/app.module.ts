@@ -6,7 +6,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtStrategy } from "./auth/jwt.strategy";
 import { UtilityModule } from "./common/utils/utility.module";
 import { TypeOrmModule } from "./config/typeorm.module";
-import { CategoryModule } from "./modules/pos-category/category.module";
+import { CategoryModule } from "./modules/category/category.module";
 import { TableModule } from "./modules/table/table.module";
 import { AppController } from "./app.controller";
 

@@ -9,7 +9,6 @@ import {
   UseGuards,
   UnauthorizedException,
   Query,
-  ParseIntPipe,
   Put,
 } from "@nestjs/common";
 import { RolesGuard } from "src/common/guards/roles.guard";
@@ -36,7 +35,7 @@ import { DecryptPipe } from "src/common/pipe/apsisDecryptor.pipe";
 @ApiTags("Category")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller("category")
+@Controller("categories")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
