@@ -3,7 +3,7 @@ pipeline {
         label 'BUILD-SERVER'
     }
     environment {
-        CONTAINER_NAME = "dev-hms-core-service" //change me
+        CONTAINER_NAME = "dev-hms-pos-service" //change me
         IMAGE_TAG = "latest"
         CONTAINER_PORT = "3004"          //change me
         HOST_PORT = "3004" 
