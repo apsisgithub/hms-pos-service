@@ -7,8 +7,9 @@ import { JwtStrategy } from "./auth/jwt.strategy";
 import { UtilityModule } from "./common/utils/utility.module";
 import { TypeOrmModule } from "./config/typeorm.module";
 import { CategoryModule } from "./modules/category/category.module";
-import { TableModule } from "./modules/table/table.module";
+import { PosTableModule } from "./modules/table/table.module";
 import { AppController } from "./app.controller";
+import { WaiterModule } from './modules/waiter/waiter.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { AppController } from "./app.controller";
     UtilityModule,
     PassportModule.register({ defaultStrategy: "jwt" }),
     CategoryModule,
-    TableModule,
+    PosTableModule,
+    WaiterModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
