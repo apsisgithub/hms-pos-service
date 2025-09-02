@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,11 +15,12 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
+
   @Column({ type: "int", nullable: false })
   sbu_id: number;
-
-  @Column({ type: "uuid", unique: true })
-  uuid: string;
 
   @Column({ nullable: false })
   name: string;
@@ -39,20 +41,20 @@ export class Category {
   children: Category[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
   @DeleteDateColumn()
-  deletedAt?: Date;
+  deleted_at?: Date;
 
   @Column({ nullable: true })
-  createdById?: number;
+  created_by?: number;
 
   @Column({ nullable: true })
-  updatedById?: number;
+  updated_by?: number;
 
   @Column({ nullable: true, type: "int" })
-  deletedById: number | null;
+  deleted_by: number | null;
 }

@@ -1,12 +1,23 @@
-import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Generated,
+} from "typeorm";
 import { PosWaiter } from "./waiter.entity";
 import { PosTable } from "./table.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { CoreEntity } from "src/utils/core-entity";
-import { PosOutlet } from "./outlet.entity";
+import { Outlet } from "./outlet.entity";
 
 @Entity("pos_counters")
 export class PosCounter extends CoreEntity {
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
+
   @Column({ type: "int" })
   sbu_id: number;
 
@@ -32,7 +43,7 @@ export class PosCounter extends CoreEntity {
   @JoinColumn({ name: "sbu_id" })
   sbu: MasterSbu;
 
-  @ManyToOne(() => PosOutlet, (outlet) => outlet.counters)
+  @ManyToOne(() => Outlet, (outlet) => outlet.counters)
   @JoinColumn({ name: "sbu_id" })
   outlet: MasterSbu;
 }

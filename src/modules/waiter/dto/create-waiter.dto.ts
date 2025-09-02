@@ -2,11 +2,10 @@ import {
   IsInt,
   IsString,
   IsNotEmpty,
-  Min,
   IsOptional,
   IsNumber,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateWaiterDto {
   @ApiProperty({ description: "ID of the SBU", example: 1 })
@@ -26,10 +25,18 @@ export class CreateWaiterDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: "Unique employee code", example: "EMP12345" })
-  @IsNotEmpty()
+  @ApiPropertyOptional({
+    description: "Unique employee code",
+    example: "EMP12345",
+  })
+  @IsOptional()
   @IsString()
-  employee_code: string;
+  employee_code?: string;
+
+  @ApiPropertyOptional({ description: "Profile Picture" })
+  @IsOptional()
+  @IsString()
+  picture?: string;
 
   @ApiProperty({
     description: "Phone number of the waiter",

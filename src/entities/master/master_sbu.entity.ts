@@ -38,7 +38,7 @@ import { MasterFolios } from "src/entities/master/master_folios.entity";
 import { MasterCharges } from "./master_charges.entity";
 import { PosTable } from "../pos/table.entity";
 import { PosWaiter } from "../pos/waiter.entity";
-import { PosOutlet } from "../pos/outlet.entity";
+import { Outlet } from "../pos/outlet.entity";
 import { PosCounter } from "../pos/counter.entity";
 
 export enum MasterSbuStatus {
@@ -242,8 +242,8 @@ export class MasterSbu {
   @OneToMany(() => PosWaiter, (waiter) => waiter.sbu)
   waiters: PosWaiter[];
 
-  @OneToMany(() => PosOutlet, (outlet) => outlet.sbu)
-  outlets: PosOutlet[];
+  @OneToMany(() => Outlet, (outlet) => outlet.sbu)
+  outlets: Outlet[];
 
   @OneToMany(() => PosCounter, (counter) => counter.sbu)
   counters: PosCounter[];

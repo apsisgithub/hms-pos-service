@@ -41,24 +41,29 @@ export class CategoryService {
   }
 
   async create(dto: CreateCategoryDto, userId: number): Promise<Category> {
+    // Generate a unique slug based on name
     const slug = await this.generateUniqueSlug(dto.name);
 
+    // Create new category entity
     const category = this.categoryRepo.create({
       uuid: uuidv4(),
       slug,
       name: dto.name,
-      createdById: userId,
+      created_by: userId,
     });
 
+    // Handle parent category if provided
     if (dto.parentId) {
       const parent = await this.categoryRepo.findOne({
         where: { id: dto.parentId },
       });
       if (!parent) throw new NotFoundException("Parent category not found");
+
       category.parent = parent;
     }
 
-    return this.categoryRepo.save(category);
+    // Save to DB
+    return await this.categoryRepo.save(category);
   }
 
   async findList(
@@ -111,9 +116,9 @@ export class CategoryService {
     return parent.children;
   }
 
-  async findOne(id: number): Promise<Category> {
+  async findOne(uuid: string): Promise<Category> {
     const category = await this.categoryRepo.findOne({
-      where: { id },
+      where: { uuid },
       relations: ["parent", "children"],
       withDeleted: true,
     });
@@ -132,52 +137,79 @@ export class CategoryService {
   }
 
   async update(
-    id: number,
+    uuid: string,
     dto: UpdateCategoryDto,
     userId: number
   ): Promise<Category> {
-    const category = await this.categoryRepo.findOne({ where: { id } });
-    if (!category) throw new Error("Category not found");
-
-    let slug = category.slug;
-    if (dto.name && dto.name !== category.name) {
-      slug = await this.generateUniqueSlug(dto.name, id);
+    // Find the existing category
+    const category = await this.categoryRepo.findOne({ where: { uuid } });
+    if (!category) {
+      throw new NotFoundException("Category not found");
     }
 
+    // Generate new slug if name changed
+    let slug = category.slug;
+    if (dto.name && dto.name !== category.name) {
+      slug = await this.generateUniqueSlug(dto.name, category.id);
+    }
+
+    // Merge DTO into entity and track updater
     Object.assign(category, {
       ...dto,
       slug,
-      updatedById: userId,
+      updated_by: userId, // Track who updated
     });
 
-    return this.categoryRepo.save(category);
+    // Save updated entity
+    return await this.categoryRepo.save(category);
   }
 
-  async softDelete(id: number, userId: number): Promise<void> {
-    const category = await this.categoryRepo.findOne({ where: { id } });
-    if (!category) throw new NotFoundException("Category not found");
+  async softDelete(uuid: string, userId: number): Promise<void> {
+    // Find the entity to soft delete
+    const category = await this.categoryRepo.findOne({ where: { uuid } });
 
-    category.deletedById = userId;
+    if (!category) {
+      throw new NotFoundException("Category not found");
+    }
+
+    // Track who deleted it
+    category.deleted_by = userId;
     await this.categoryRepo.save(category);
 
-    await this.categoryRepo.softDelete(id);
+    // Perform soft delete
+    await this.categoryRepo.softDelete(uuid);
   }
 
-  async restore(id: number, userId: number): Promise<void> {
+  async restore(uuid: string, userId: number): Promise<void> {
+    // Find soft-deleted entity
     const category = await this.categoryRepo.findOne({
-      where: { id },
-      withDeleted: true,
+      where: { uuid },
+      withDeleted: true, // include soft-deleted records
     });
-    if (!category) throw new NotFoundException("Category not found");
 
-    category.deletedById = null; // reset deletedById
-    category.updatedById = userId; // track who restored
+    if (!category) {
+      throw new NotFoundException("Category not found");
+    }
+
+    // Reset deleted_by and track who restored
+    category.deleted_by = null;
+    category.updated_by = userId;
+
+    // Save the updated fields first
     await this.categoryRepo.save(category);
 
-    await this.categoryRepo.restore(id);
+    // Restore soft-deleted entity
+    await this.categoryRepo.restore(uuid);
   }
 
-  async hardDelete(id: number): Promise<void> {
-    await this.categoryRepo.delete(id);
+  async hardDelete(uuid: string): Promise<void> {
+    // category check if the record exists first
+    const category = await this.categoryRepo.findOne({ where: { uuid } });
+    if (!category) {
+      throw new NotFoundException(`category with uuid ${uuid} not found`);
+    }
+
+    // Permanently delete
+    await this.categoryRepo.delete(category.id);
   }
 }
