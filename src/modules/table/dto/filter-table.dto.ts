@@ -29,7 +29,7 @@ export class TableFilterDto {
 
   @ApiPropertyOptional({
     description: "Search by category name",
-    example: "Electronics",
+    example: "Table Name",
   })
   @IsOptional()
   @IsString()

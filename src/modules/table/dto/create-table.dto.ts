@@ -17,7 +17,7 @@ export class CreateTableDto {
   @IsInt()
   sbu_id: number;
 
-  @ApiProperty({ description: "ID of the Outlet", example: 101 })
+  @ApiProperty({ description: "ID of the Outlet", example: 2 })
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
