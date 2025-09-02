@@ -8,6 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  Generated,
 } from "typeorm";
 import { PosWaiter } from "./waiter.entity";
 import { PosTable } from "./table.entity";
@@ -15,9 +16,13 @@ import { MasterSbu } from "../master/master_sbu.entity";
 import { PosCounter } from "./counter.entity";
 
 @Entity("pos_outlets")
-export class PosOutlet {
+export class Outlet {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
 
   @Column({ type: "int" })
   sbu_id: number;
@@ -56,7 +61,7 @@ export class PosOutlet {
   deleted_at: Date;
 
   @Column({ type: "int", nullable: true })
-  deleted_by: number;
+  deleted_by: number | null;
 
   @OneToMany(() => PosTable, (table) => table.outlet)
   tables: PosTable[];

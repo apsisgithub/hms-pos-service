@@ -1,8 +1,8 @@
-import { IsOptional, IsInt, IsString, Min } from "class-validator";
-import { Type } from "class-transformer";
+import { IsInt, IsOptional, IsString, Min } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 
-export class CategoryFilterDto {
+export class OutletFilterDto {
   @ApiPropertyOptional({
     description: "Page number (starts from 1)",
     example: 1,
@@ -29,18 +29,9 @@ export class CategoryFilterDto {
 
   @ApiPropertyOptional({
     description: "Search by category name",
-    example: "Electronics",
+    example: "Banani",
   })
   @IsOptional()
   @IsString()
   search?: string;
-
-  @ApiPropertyOptional({
-    description: "Filter by parent category ID (for subcategories)",
-    example: 5,
-  })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  parent_id?: number;
 }

@@ -1,26 +1,21 @@
 CREATE TABLE `pos_table_waiter_assignments` (
   `id` INT NOT NULL AUTO_INCREMENT,
-
   `table_id` INT NOT NULL,
   `waiter_id` INT NOT NULL,
-
   `assigned_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `unassigned_at` TIMESTAMP NULL,
-
   `status` ENUM('Active', 'Released', 'Transferred') NOT NULL DEFAULT 'Active',
-
-  -- CoreEntity common fields (assuming id, created_at, updated_at, deleted_at)
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` TIMESTAMP NULL,
-
+  `createdAt` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updatedAt` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  `deletedAt` DATETIME(6) NULL,
+  `createdById` INT NULL,
+  `updatedById` INT NULL,
+  `deletedById` INT NULL,
   PRIMARY KEY (`id`),
-
-  CONSTRAINT `fk_table_waiter_assignments_table`
+  CONSTRAINT `FK_table_waiter_assignment_table`
     FOREIGN KEY (`table_id`) REFERENCES `pos_tables` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-
-  CONSTRAINT `fk_table_waiter_assignments_waiter`
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_table_waiter_assignment_waiter`
     FOREIGN KEY (`waiter_id`) REFERENCES `pos_waiters` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-);
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

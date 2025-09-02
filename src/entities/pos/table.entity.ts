@@ -3,15 +3,14 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  OneToMany,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Generated,
 } from "typeorm";
-import { CoreEntity } from "src/utils/core-entity";
 import { MasterFloor } from "../master/master_floor.entity";
-import { PosOutlet } from "./outlet.entity";
+import { Outlet } from "./outlet.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 
 export enum TableStatus {
@@ -24,6 +23,10 @@ export enum TableStatus {
 export class PosTable {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
 
   @Column({ type: "int" })
   sbu_id: number;
@@ -75,7 +78,7 @@ export class PosTable {
   @JoinColumn({ name: "sbu_id" })
   sbu: MasterSbu;
 
-  @ManyToOne(() => PosOutlet, (outlet) => outlet.tables)
+  @ManyToOne(() => Outlet, (outlet) => outlet.tables)
   @JoinColumn({ name: "outlet_id" })
-  outlet: PosOutlet;
+  outlet: Outlet;
 }

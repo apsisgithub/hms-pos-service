@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from "typeorm";
 
 @Entity("pos_categories")
@@ -14,11 +16,12 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
+
   @Column({ type: "int", nullable: false })
   sbu_id: number;
-
-  @Column({ type: "uuid", unique: true })
-  uuid: string;
 
   @Column({ nullable: false })
   name: string;
@@ -29,30 +32,36 @@ export class Category {
   @Column({ nullable: true })
   picture: string;
 
+  // Parent category
   @ManyToOne(() => Category, (category) => category.children, {
-    onDelete: "CASCADE",
     nullable: true,
+    onDelete: "CASCADE",
   })
-  parent: Category;
+  @JoinColumn({ name: "parent_id" })
+  parent?: Category | null;
 
+  @Column({ type: "int", nullable: true })
+  parent_id?: number;
+
+  // Children categories
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({ type: "timestamp" })
+  created_at: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @UpdateDateColumn({ type: "timestamp" })
+  updated_at: Date;
 
-  @DeleteDateColumn()
-  deletedAt?: Date;
+  @DeleteDateColumn({ type: "timestamp", nullable: true })
+  deleted_at?: Date;
 
-  @Column({ nullable: true })
-  createdById?: number;
+  @Column({ type: "int", nullable: true })
+  created_by?: number;
 
-  @Column({ nullable: true })
-  updatedById?: number;
+  @Column({ type: "int", nullable: true })
+  updated_by?: number;
 
-  @Column({ nullable: true, type: "int" })
-  deletedById: number | null;
+  @Column({ type: "int", nullable: true })
+  deleted_by?: number | null;
 }
