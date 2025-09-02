@@ -9,7 +9,8 @@ import { TypeOrmModule } from "./config/typeorm.module";
 import { CategoryModule } from "./modules/category/category.module";
 import { PosTableModule } from "./modules/table/table.module";
 import { AppController } from "./app.controller";
-import { WaiterModule } from './modules/waiter/waiter.module';
+import { WaiterModule } from "./modules/waiter/waiter.module";
+import { OutletModule } from "./modules/outlet/outlet.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { WaiterModule } from './modules/waiter/waiter.module';
     CategoryModule,
     PosTableModule,
     WaiterModule,
+    OutletModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
