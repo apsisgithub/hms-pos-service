@@ -26,6 +26,15 @@ export class PosOutlet {
   name: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
+  logo: string;
+
+  @Column({ type: "varchar", length: 155, nullable: true })
+  email: string;
+
+  @Column({ type: "varchar", length: 55, nullable: true })
+  phone: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
   location: string;
 
   @Column({ type: "text", nullable: true })

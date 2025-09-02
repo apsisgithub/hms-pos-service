@@ -8,7 +8,7 @@ import {
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreatePosWaiterDto {
+export class CreateWaiterDto {
   @ApiProperty({ description: "ID of the SBU", example: 1 })
   @IsNotEmpty()
   @IsNumber()
