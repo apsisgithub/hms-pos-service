@@ -53,9 +53,9 @@ export class CategoryService {
     });
 
     // Handle parent category if provided
-    if (dto.parentId) {
+    if (dto.parent_id && dto.parent_id > 0) {
       const parent = await this.categoryRepo.findOne({
-        where: { id: dto.parentId },
+        where: { id: dto.parent_id },
       });
       if (!parent) throw new NotFoundException("Parent category not found");
 

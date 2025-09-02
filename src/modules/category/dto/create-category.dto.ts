@@ -23,7 +23,7 @@ export class CreateCategoryDto {
   })
   @IsOptional()
   @IsNumber()
-  parentId?: number;
+  parent_id?: number;
 
   @ApiPropertyOptional({
     description: "Identifier for the SBU in the SaaS application",

@@ -40,7 +40,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiResponse({
     status: 201,
     description: "Category created successfully",

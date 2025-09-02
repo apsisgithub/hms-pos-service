@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from "typeorm";
 
 @Entity("pos_categories")
@@ -31,30 +32,36 @@ export class Category {
   @Column({ nullable: true })
   picture: string;
 
+  // Parent category
   @ManyToOne(() => Category, (category) => category.children, {
-    onDelete: "CASCADE",
     nullable: true,
+    onDelete: "CASCADE",
   })
-  parent: Category;
+  @JoinColumn({ name: "parent_id" })
+  parent?: Category;
 
+  @Column({ type: "int", nullable: true })
+  parent_id?: number;
+
+  // Children categories
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "timestamp" })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "timestamp" })
   updated_at: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: "timestamp", nullable: true })
   deleted_at?: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: "int", nullable: true })
   created_by?: number;
 
-  @Column({ nullable: true })
+  @Column({ type: "int", nullable: true })
   updated_by?: number;
 
-  @Column({ nullable: true, type: "int" })
-  deleted_by: number | null;
+  @Column({ type: "int", nullable: true })
+  deleted_by?: number | null;
 }
