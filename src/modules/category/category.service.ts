@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Not, Repository } from "typeorm";
 import { CreateCategoryDto } from "./dto/create-category.dto";
@@ -69,7 +74,7 @@ export class CategoryService {
   async findList(
     filter: CategoryFilterDto
   ): Promise<PaginatedResult<Category>> {
-    const { page = 1, limit = 10, search, parentId } = filter;
+    const { page = 1, limit = 10, search, parent_id } = filter;
 
     const query = this.categoryRepo
       .createQueryBuilder("category")
@@ -81,14 +86,14 @@ export class CategoryService {
       query.andWhere("category.name LIKE :search", { search: `%${search}%` });
     }
 
-    if (parentId !== undefined) {
-      query.andWhere("category.parentId = :parentId", { parentId });
+    if (parent_id !== undefined) {
+      query.andWhere("category.parent_id = :parent_id", { parent_id });
     }
 
     const [data, total] = await query
       .skip((page - 1) * limit)
       .take(limit)
-      .orderBy("category.createdAt", "DESC")
+      .orderBy("category.created_at", "DESC")
       .getManyAndCount();
 
     return {
@@ -141,27 +146,42 @@ export class CategoryService {
     dto: UpdateCategoryDto,
     userId: number
   ): Promise<Category> {
-    // Find the existing category
-    const category = await this.categoryRepo.findOne({ where: { uuid } });
-    if (!category) {
-      throw new NotFoundException("Category not found");
+    try {
+      const { parent_id, ...rest } = dto;
+      // Find the existing category
+      const category = await this.categoryRepo.findOne({ where: { uuid } });
+      if (!category) {
+        throw new NotFoundException("Category not found");
+      }
+
+      // Generate new slug if name changed
+      let slug = category.slug;
+      if (dto.name && dto.name !== category.name) {
+        slug = await this.generateUniqueSlug(dto.name, category.id);
+      }
+
+      // Merge DTO into entity and track updater
+      Object.assign(category, {
+        ...rest,
+        slug,
+        updated_by: userId, // Track who updated
+      });
+
+      if (parent_id !== undefined && parent_id > 0) {
+        const parent = await this.categoryRepo.findOne({
+          where: { id: parent_id },
+        });
+        if (!parent) throw new NotFoundException("Parent category not found");
+        category.parent = parent;
+      } else {
+        category.parent = null;
+      }
+
+      // Save updated entity
+      return await this.categoryRepo.save(category);
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-
-    // Generate new slug if name changed
-    let slug = category.slug;
-    if (dto.name && dto.name !== category.name) {
-      slug = await this.generateUniqueSlug(dto.name, category.id);
-    }
-
-    // Merge DTO into entity and track updater
-    Object.assign(category, {
-      ...dto,
-      slug,
-      updated_by: userId, // Track who updated
-    });
-
-    // Save updated entity
-    return await this.categoryRepo.save(category);
   }
 
   async softDelete(uuid: string, userId: number): Promise<void> {

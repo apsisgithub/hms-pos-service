@@ -38,7 +38,7 @@ export class Category {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "parent_id" })
-  parent?: Category;
+  parent?: Category | null;
 
   @Column({ type: "int", nullable: true })
   parent_id?: number;

@@ -42,5 +42,5 @@ export class CategoryFilterDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  parentId?: number;
+  parent_id?: number;
 }
