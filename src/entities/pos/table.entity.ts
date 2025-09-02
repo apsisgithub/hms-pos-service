@@ -69,7 +69,7 @@ export class PosTable {
   deleted_at: Date;
 
   @Column({ type: "int", nullable: true })
-  deleted_by: number;
+  deleted_by: number | null;
 
   @ManyToOne(() => MasterSbu, (sbu) => sbu.tables)
   @JoinColumn({ name: "sbu_id" })
