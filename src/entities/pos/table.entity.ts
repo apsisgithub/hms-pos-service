@@ -69,7 +69,7 @@ export class PosTable {
   updated_by: number;
 
   @DeleteDateColumn({ name: "deleted_at", type: "timestamp" })
-  deleted_at: Date;
+  deleted_at: Date | null;
 
   @Column({ type: "int", nullable: true })
   deleted_by: number | null;
