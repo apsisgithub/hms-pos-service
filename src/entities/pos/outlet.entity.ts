@@ -10,10 +10,11 @@ import {
   PrimaryGeneratedColumn,
   Generated,
 } from "typeorm";
-import { PosWaiter } from "./waiter.entity";
+import { Waiter } from "./waiter.entity";
 import { PosTable } from "./table.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { PosCounter } from "./counter.entity";
+import { Product } from "./products.entity";
 
 @Entity("pos_outlets")
 export class Outlet {
@@ -66,8 +67,8 @@ export class Outlet {
   @OneToMany(() => PosTable, (table) => table.outlet)
   tables: PosTable[];
 
-  @OneToMany(() => PosWaiter, (waiter) => waiter.outlet)
-  waiters: PosWaiter[];
+  @OneToMany(() => Waiter, (waiter) => waiter.outlet)
+  waiters: Waiter[];
 
   @ManyToOne(() => MasterSbu, (sbu) => sbu.outlets)
   @JoinColumn({ name: "sbu_id" })
@@ -75,4 +76,7 @@ export class Outlet {
 
   @OneToMany(() => PosCounter, (counter) => counter.outlet)
   counters: PosCounter[];
+
+  @OneToMany(() => Product, (product) => product.sbu)
+  products: Product[];
 }

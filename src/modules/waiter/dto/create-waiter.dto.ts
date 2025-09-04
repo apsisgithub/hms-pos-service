@@ -14,7 +14,7 @@ export class CreateWaiterDto {
   @IsInt()
   sbu_id: number;
 
-  @ApiProperty({ description: "ID of the Outlet", example: 101 })
+  @ApiProperty({ description: "ID of the Outlet", example: 1 })
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
@@ -33,7 +33,10 @@ export class CreateWaiterDto {
   @IsString()
   employee_code?: string;
 
-  @ApiPropertyOptional({ description: "Profile Picture" })
+  @ApiPropertyOptional({
+    description: "Profile Picture",
+    example: "uploads/1756875108807-429572893.jpg",
+  })
   @IsOptional()
   @IsString()
   picture?: string;

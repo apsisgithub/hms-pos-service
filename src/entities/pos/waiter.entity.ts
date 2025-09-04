@@ -13,13 +13,17 @@ import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
 
 @Entity("pos_waiters")
-export class PosWaiter {
+export class Waiter {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: "uuid", unique: true })
   @Generated("uuid")
   uuid: string;
+
+  @ManyToOne(() => MasterSbu, (sbu) => sbu.waiters)
+  @JoinColumn({ name: "sbu_id" })
+  sbu: MasterSbu;
 
   @Column({ type: "int" })
   sbu_id: number;
@@ -55,11 +59,7 @@ export class PosWaiter {
   deleted_at: Date;
 
   @Column({ type: "int", nullable: true })
-  deleted_by: number;
-
-  @ManyToOne(() => MasterSbu, (sbu) => sbu.waiters)
-  @JoinColumn({ name: "sbu_id" })
-  sbu: MasterSbu;
+  deleted_by: number | null;
 
   @ManyToOne(() => Outlet, (outlet) => outlet.waiters)
   @JoinColumn({ name: "outlet_id" })

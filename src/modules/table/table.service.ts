@@ -136,10 +136,9 @@ export class PosTableService {
       }
 
       table.deleted_by = userId;
-      table.deleted_at = new Date();
       await this.posTable.save(table);
 
-      await this.posTable.softDelete(uuid);
+      await this.posTable.softDelete(table.id);
     } catch (error) {
       throw new NotFoundException("Table not found");
     }
@@ -161,7 +160,7 @@ export class PosTableService {
       table.updated_by = userId;
       await this.posTable.save(table);
 
-      await this.posTable.restore(uuid);
+      await this.posTable.restore(table.id);
     } catch (error) {
       throw new NotFoundException("Table not found");
     }

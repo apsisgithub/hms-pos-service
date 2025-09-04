@@ -11,6 +11,8 @@ import { PosTableModule } from "./modules/table/table.module";
 import { AppController } from "./app.controller";
 import { WaiterModule } from "./modules/waiter/waiter.module";
 import { OutletModule } from "./modules/outlet/outlet.module";
+import { CounterModule } from './modules/counter/counter.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { OutletModule } from "./modules/outlet/outlet.module";
     OutletModule,
     PosTableModule,
     WaiterModule,
+    CounterModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

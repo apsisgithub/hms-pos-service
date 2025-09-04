@@ -90,6 +90,22 @@ export class CategoryService {
       query.andWhere("category.parent_id = :parent_id", { parent_id });
     }
 
+    if (filter.is_deleted === "yes") {
+      query.withDeleted().andWhere("category.deleted_at IS NOT NULL");
+    } else {
+      query.andWhere("category.deleted_at IS NULL");
+    }
+
+    if (filter.sbu_id && filter.sbu_id > 0) {
+      query.andWhere("category.sbu_id = :sbu_id", { sbu_id: filter.sbu_id });
+    }
+
+    if (filter.outlet_id && filter.outlet_id > 0) {
+      query.andWhere("category.outlet_id = :outlet_id", {
+        outlet_id: filter.outlet_id,
+      });
+    }
+
     const [data, total] = await query
       .skip((page - 1) * limit)
       .take(limit)
@@ -197,7 +213,7 @@ export class CategoryService {
     await this.categoryRepo.save(category);
 
     // Perform soft delete
-    await this.categoryRepo.softDelete(uuid);
+    await this.categoryRepo.softDelete(category.id);
   }
 
   async restore(uuid: string, userId: number): Promise<void> {
@@ -219,7 +235,7 @@ export class CategoryService {
     await this.categoryRepo.save(category);
 
     // Restore soft-deleted entity
-    await this.categoryRepo.restore(uuid);
+    await this.categoryRepo.restore(category.id);
   }
 
   async hardDelete(uuid: string): Promise<void> {

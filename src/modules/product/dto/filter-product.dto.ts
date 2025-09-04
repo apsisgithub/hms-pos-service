@@ -1,15 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
 import {
-  IsBoolean,
-  IsInt,
-  IsNumber,
   IsOptional,
+  IsBoolean,
   IsString,
+  IsNumber,
+  IsInt,
   Min,
 } from "class-validator";
 
-export class WaiterFilterDto {
+export class FilterProductDto {
   @ApiProperty({
     description: "Page number for pagination",
     example: 1,
@@ -34,7 +33,7 @@ export class WaiterFilterDto {
 
   @ApiProperty({
     description: "Search term for waiter name or employee code",
-    example: "John",
+    example: "product name",
     required: false,
   })
   @IsOptional()
@@ -47,9 +46,9 @@ export class WaiterFilterDto {
   @IsInt()
   sbu_id?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: "Filter by Outlet ID",
-    example: 101,
+    example: 1,
     required: false,
   })
   @IsOptional()
@@ -57,7 +56,25 @@ export class WaiterFilterDto {
   @IsInt()
   outlet_id?: number;
 
+  @ApiPropertyOptional({
+    description: "Filter by Category ID",
+    example: 1,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  @IsInt()
+  category_id?: number;
+
   @ApiPropertyOptional({ enum: ["Yes", "No"] })
   @IsOptional()
   is_deleted?: "Yes" | "No";
+
+  @ApiPropertyOptional({ enum: ["Yes", "No"] })
+  @IsOptional()
+  is_special?: "Yes" | "No";
+
+  @ApiPropertyOptional({ enum: ["Yes", "No"] })
+  @IsOptional()
+  offer_is_available?: "Yes" | "No";
 }

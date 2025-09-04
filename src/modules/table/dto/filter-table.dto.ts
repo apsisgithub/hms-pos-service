@@ -1,5 +1,5 @@
-import { IsOptional, IsInt, IsString, Min } from "class-validator";
-import { Type } from "class-transformer";
+import { IsOptional, IsInt, IsString, Min, IsBoolean } from "class-validator";
+import { Transform, Type } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class TableFilterDto {
@@ -52,4 +52,18 @@ export class TableFilterDto {
   @Type(() => Number)
   @IsInt()
   floor_id?: number;
+
+  @ApiPropertyOptional({
+    description: "Include deleted waiters in the results",
+    enum: ["yes", "no"],
+    example: "no",
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value == "yes") return Boolean(true);
+    if (value == "no") return Boolean(false);
+    return value;
+  })
+  @IsBoolean()
+  is_deleted?: boolean | string;
 }

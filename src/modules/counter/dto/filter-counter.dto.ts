@@ -3,13 +3,13 @@ import {
   IsInt,
   IsString,
   Min,
-  IsBoolean,
   IsNumber,
+  IsBoolean,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
-export class CategoryFilterDto {
+export class CounterFilterDto {
   @ApiPropertyOptional({
     description: "Page number (starts from 1)",
     example: 1,
@@ -35,21 +35,32 @@ export class CategoryFilterDto {
   limit: number = 10;
 
   @ApiPropertyOptional({
-    description: "Search by category name",
-    example: "Electronics",
+    description: "Search by counter name",
+    example: "Front Counter",
   })
   @IsOptional()
   @IsString()
   search?: string;
 
   @ApiPropertyOptional({
-    description: "Filter by parent category ID (for subcategories)",
-    example: 5,
+    description: "Filter by SBU ID",
+    example: 1,
+    required: false,
   })
   @IsOptional()
-  @Type(() => Number)
+  @IsNumber()
   @IsInt()
-  parent_id?: number;
+  sbu_id?: number;
+
+  @ApiPropertyOptional({
+    description: "Filter by Outlet ID",
+    example: 1,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  @IsInt()
+  outlet_id?: number;
 
   @ApiPropertyOptional({
     description: "Include deleted waiters in the results",
@@ -64,20 +75,4 @@ export class CategoryFilterDto {
   })
   @IsBoolean()
   is_deleted?: boolean | string;
-
-  @ApiPropertyOptional({
-    description: "Identifier for the SBU in the SaaS application",
-    example: 1,
-  })
-  @IsOptional()
-  @IsNumber()
-  sbu_id?: number;
-
-  @ApiPropertyOptional({
-    description: "Identifier for the OUtlet specific category",
-    example: 1,
-  })
-  @IsOptional()
-  @IsNumber()
-  outlet_id?: number;
 }
