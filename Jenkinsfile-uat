@@ -3,20 +3,20 @@ pipeline {
         label 'BUILD-SERVER'
     }
     environment {
-        CONTAINER_NAME = "dev-hms-pos-service" //change me
+        CONTAINER_NAME = "uat-hms-pos-service" //change me
         IMAGE_TAG = "latest"
         CONTAINER_PORT = "3004"          //change me
         HOST_PORT = "3004" 
-        NETWORK_NAME = "hotel_dev"
+        NETWORK_NAME = "hotel_uat"
         RESTART_POLICY = "always"
-        DOCKER_FILENAME = "Dockerfile-dev"	//change me
+        DOCKER_FILENAME = "Dockerfile-uat"	//change me
         RECIPIENT_EMAILS = "report.infra@apsissolutions.com, tonmoy.barai@apsissolutions.com, abu.syeed@apsissolutions.com"
 
         FTP_HOST = "192.168.10.50:21" 
         FTP_PATH = "/ENV_FILE/bracu/develop/bracu-repair-and-maintenance-service" //FTP server Absolute path
         LOCAL_PATH = "." 
 
-        TARGET_SERVER = "CRM-DEV" //change me
+        TARGET_SERVER = "UAT2" //change me
         TARGET_USER = "devops"
         DOCKER_HUB_USERNAME = "apsissolutions"
         DOCKER_IMAGE = "${env.DOCKER_HUB_USERNAME}/${env.CONTAINER_NAME}:${env.IMAGE_TAG}"
@@ -88,7 +88,7 @@ pipeline {
 
         stage('Deploy Docker Container') {
             agent {
-                label 'CRM-DEV' // Change me
+                label 'UAT2' // Change me
             }
             steps {
                 script {
