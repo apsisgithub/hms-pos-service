@@ -11,8 +11,10 @@ import { PosTableModule } from "./modules/table/table.module";
 import { AppController } from "./app.controller";
 import { WaiterModule } from "./modules/waiter/waiter.module";
 import { OutletModule } from "./modules/outlet/outlet.module";
-import { CounterModule } from './modules/counter/counter.module';
-import { ProductModule } from './modules/product/product.module';
+import { CounterModule } from "./modules/counter/counter.module";
+import { ProductModule } from "./modules/product/product.module";
+import { ComboMealModule } from "./modules/combo-meal/combo-meal.module";
+import { KitchenModule } from "./modules/kitchen/kitchen.module";
 
 @Module({
   imports: [
@@ -28,7 +30,9 @@ import { ProductModule } from './modules/product/product.module';
     PosTableModule,
     WaiterModule,
     CounterModule,
+    KitchenModule,
     ProductModule,
+    ComboMealModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

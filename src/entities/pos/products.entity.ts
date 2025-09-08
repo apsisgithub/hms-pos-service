@@ -15,6 +15,9 @@ import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
 import { ProductVariant } from "./product-varient.entity";
 import { ProductAddon } from "./product_addons.entity";
+import { ComboMeal } from "./combo_meals.entity";
+import { ComboMealProduct } from "./combo_meal_products.entity";
+import { Kitchen } from "./kitchen.entity";
 
 @Entity("pos_products")
 export class Product {
@@ -167,4 +170,13 @@ export class Product {
   // OneToMany relation with ProductAddon
   @OneToMany(() => ProductAddon, (productAddon) => productAddon.product)
   addons?: ProductAddon[];
+
+  // relation with combo meals
+  @OneToMany(() => ComboMealProduct, (cmp) => cmp.product)
+  combos: ComboMealProduct[];
+
+  // Add other relations with product
+  @ManyToOne(() => Kitchen, (kitchen) => kitchen.products)
+  @JoinColumn({ name: "kitchen_id" })
+  kitchen: Kitchen;
 }
