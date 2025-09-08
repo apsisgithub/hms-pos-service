@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsInt,
   IsOptional,
@@ -6,12 +7,49 @@ import {
   IsNumber,
   IsBoolean,
   IsDate,
+  IsArray,
+  ValidateNested,
 } from "class-validator";
 
+// ---------- VARIANT DTO ----------
+export class ProductVariantDto {
+  @ApiProperty({ example: "Medium", description: "Variant name" })
+  @IsString()
+  variant_name: string;
+
+  @ApiProperty({ example: "PIZ-MED", description: "Variant SKU" })
+  @IsString()
+  sku: string;
+
+  @ApiProperty({ example: 7.5, description: "Variant price" })
+  @IsNumber()
+  price: number;
+}
+
+// ---------- ADDON DTO ----------
+export class ProductAddonDto {
+  @ApiProperty({ example: 1, description: "Addon ID (foreign key)" })
+  @IsInt()
+  addon_id: number;
+
+  @ApiPropertyOptional({
+    example: 1.5,
+    description: "Override addon price (if different from default)",
+  })
+  @IsOptional()
+  @IsNumber()
+  extra_price?: number;
+}
+
+// ---------- PRODUCT DTO ----------
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: "SBU ID (foreign key)" })
   @IsInt()
   sbu_id: number;
+
+  @ApiProperty({ example: 1, description: "SBU ID (foreign key)" })
+  @IsInt()
+  outlet_id: number;
 
   @ApiProperty({ example: 1, description: "Category ID (foreign key)" })
   @IsInt()
@@ -149,11 +187,34 @@ export class CreateProductDto {
   @IsBoolean()
   is_active?: boolean | null;
 
+  // ---------- VARIANTS ----------
   @ApiPropertyOptional({
-    example: "Customer prefers extra cheese",
-    description: "Customer note for special instructions",
+    type: [ProductVariantDto],
+    description: "List of product variants",
+    example: [
+      { variant_name: "Small", sku: "PIZ-SM", price: 5.0 },
+      { variant_name: "Medium", sku: "PIZ-MD", price: 7.5 },
+      { variant_name: "Large", sku: "PIZ-LG", price: 10.0 },
+    ],
   })
   @IsOptional()
-  @IsString()
-  customer_note?: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductVariantDto)
+  variants?: ProductVariantDto[];
+
+  // ---------- ADDONS ----------
+  @ApiPropertyOptional({
+    type: [ProductAddonDto],
+    description: "List of addons available for the product",
+    example: [
+      { addon_id: 1, extra_price: 1.5 },
+      { addon_id: 2, extra_price: 1.0 },
+    ],
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductAddonDto)
+  addons?: ProductAddonDto[];
 }

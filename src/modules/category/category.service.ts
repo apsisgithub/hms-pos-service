@@ -51,9 +51,10 @@ export class CategoryService {
 
     // Create new category entity
     const category = this.categoryRepo.create({
-      uuid: uuidv4(),
+      ...dto,
+      parent_id: dto.parent_id && dto.parent_id > 0 ? dto.parent_id : null,
       slug,
-      name: dto.name,
+      uuid: uuidv4(),
       created_by: userId,
     });
 
@@ -179,6 +180,7 @@ export class CategoryService {
       // Merge DTO into entity and track updater
       Object.assign(category, {
         ...rest,
+        parent_id: parent_id && parent_id > 0 ? parent_id : null,
         slug,
         updated_by: userId, // Track who updated
       });

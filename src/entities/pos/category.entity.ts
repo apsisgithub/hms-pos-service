@@ -45,7 +45,7 @@ export class Category {
   parent?: Category | null;
 
   @Column({ type: "int", nullable: true })
-  parent_id?: number;
+  parent_id?: number | null;
 
   // Children categories
   @OneToMany(() => Category, (category) => category.parent)

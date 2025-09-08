@@ -33,7 +33,6 @@ export class FilterProductDto {
 
   @ApiProperty({
     description: "Search term for waiter name or employee code",
-    example: "product name",
     required: false,
   })
   @IsOptional()
@@ -48,7 +47,6 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: "Filter by Outlet ID",
-    example: 1,
     required: false,
   })
   @IsOptional()
@@ -58,7 +56,6 @@ export class FilterProductDto {
 
   @ApiPropertyOptional({
     description: "Filter by Category ID",
-    example: 1,
     required: false,
   })
   @IsOptional()

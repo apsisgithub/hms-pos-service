@@ -2,6 +2,7 @@ CREATE TABLE pos_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     uuid CHAR(36) NOT NULL UNIQUE,
     sbu_id INT NOT NULL,
+    outlet_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL,
     picture VARCHAR(255),

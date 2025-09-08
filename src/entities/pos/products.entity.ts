@@ -6,12 +6,15 @@ import {
   Generated,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Category } from "./category.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
+import { ProductVariant } from "./product-varient.entity";
+import { ProductAddon } from "./product_addons.entity";
 
 @Entity("pos_products")
 export class Product {
@@ -47,14 +50,8 @@ export class Product {
   })
   image: string | null;
 
-  @Column({ name: "component", type: "text", nullable: true })
-  component: string | null;
-
   @Column({ name: "description", type: "text", nullable: true })
   description: string | null;
-
-  @Column({ name: "notes", type: "varchar", length: 255, nullable: true })
-  notes: string | null;
 
   @Column({ name: "menu_type", type: "varchar", length: 25, nullable: true })
   menu_type: string | null;
@@ -97,6 +94,9 @@ export class Product {
   })
   offer_end_date: Date | null;
 
+  @Column({ name: "component", type: "text", nullable: true })
+  component: string | null;
+
   @Column({ name: "Position", type: "int", nullable: true })
   position: number | null;
 
@@ -105,6 +105,12 @@ export class Product {
 
   @Column({ name: "is_group", type: "int", nullable: true })
   is_group: number | null;
+
+  @Column({ name: "is_varient", type: "int", default: 0 })
+  is_varient: number | null;
+
+  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  price: number;
 
   @Column({ name: "is_custom_qty", type: "int", default: 0 })
   is_custom_qty: number;
@@ -123,9 +129,6 @@ export class Product {
   })
   is_active: boolean | null;
 
-  @Column({ name: "customer_note", type: "text", nullable: true })
-  customer_note: string | null;
-
   @CreateDateColumn({ type: "timestamp" })
   created_at: Date;
 
@@ -133,7 +136,7 @@ export class Product {
   updated_at: Date;
 
   @DeleteDateColumn({ type: "timestamp", nullable: true })
-  deleted_at?: Date;
+  deleted_at?: Date | null;
 
   @Column({ type: "int", nullable: true })
   created_by: number | null;
@@ -156,4 +159,12 @@ export class Product {
   })
   @JoinColumn({ name: "outlet_id" })
   outlet?: Outlet;
+
+  // OneToMany relation with ProductVariant
+  @OneToMany(() => ProductVariant, (variant) => variant.product)
+  variants?: ProductVariant[];
+
+  // OneToMany relation with ProductAddon
+  @OneToMany(() => ProductAddon, (productAddon) => productAddon.product)
+  addons?: ProductAddon[];
 }

@@ -30,7 +30,7 @@ import { PaginatedResult } from "src/common/utils/paginated_result";
 
 @ApiTags("Product")
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller("products")
 export class ProductController {
   constructor(private readonly service: ProductService) {}
