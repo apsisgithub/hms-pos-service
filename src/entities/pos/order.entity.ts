@@ -15,6 +15,7 @@ import { OrderItem } from "./order_items.entity";
 import { MasterRoom } from "../master/master_room.entity";
 import { MasterGuest } from "../master/master-guest.entity";
 import { Waiter } from "./waiter.entity";
+import { OrderToken } from "./order_token.entity";
 
 export enum OrderStatus {
   PENDING = "Pending",
@@ -113,4 +114,7 @@ export class Order {
   //relation with order items
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
   items: OrderItem[];
+
+  @OneToMany(() => OrderToken, (item) => item.order, { cascade: true })
+  tokens: OrderToken[];
 }

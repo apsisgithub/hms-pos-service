@@ -27,6 +27,9 @@ export class OrderItem {
   @Column({ type: "int", nullable: true })
   variant_id: number | null;
 
+  @Column({ type: "int", nullable: true })
+  token_id: number | null;
+
   @Column({ type: "int", default: 1 })
   quantity: number;
 
@@ -34,7 +37,10 @@ export class OrderItem {
   unit_price: number; // price of product/variant
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
-  subtotal: number; // (unit_price * quantity) + addons
+  discount: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2 })
+  subtotal: number; // ((unit_price - discount) * quantity) + addons
 
   @OneToMany(() => OrderItemAddon, (addon) => addon.order_item, {
     cascade: true,
