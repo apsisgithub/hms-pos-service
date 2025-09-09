@@ -1,29 +1,87 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  Generated,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { OrderItem } from "./order_items.entity";
+import { MasterRoom } from "../master/master_room.entity";
+import { MasterGuest } from "../master/master-guest.entity";
+import { Waiter } from "./waiter.entity";
+
+export enum OrderStatus {
+  PENDING = "Pending",
+  IN_PROGRESS = "In-Progress",
+  READY = "Ready",
+  SERVED = "Served",
+  COMPLETED = "Completed",
+  CANCELLED = "Cancelled",
+  HOLD = "Hold",
+}
 
 @Entity("pos_orders")
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
+
   @Column({ type: "varchar", length: 50, unique: true })
   order_no: string; // e.g. ORD-20250907-001
 
   @Column({ type: "int", nullable: true })
-  table_id: number | null; // if dine-in
+  table_id?: number | null; // if dine-in
 
   @Column({ type: "int", nullable: true })
-  customer_id: number | null;
+  waiter_id?: number | null;
+
+  // relationships with Waiter when dine-in or room-service
+  @ManyToOne(() => Waiter, { onDelete: "SET NULL", eager: true })
+  @JoinColumn({ name: "waiter_id" })
+  waiter?: Waiter;
+
+  @Column({ type: "int", nullable: true })
+  guest_count: number | null; // if dine-in, number of guests at the table
+
+  @Column({ type: "int", nullable: true })
+  room_id?: number | null; // if room-service
+
+  // relationships with MasterRoom
+  @ManyToOne(() => MasterRoom, { onDelete: "SET NULL", eager: true })
+  @JoinColumn({ name: "room_id" })
+  room?: MasterRoom;
+
+  @Column({ type: "int", nullable: true })
+  customer_id?: number | null;
+
+  // relationships with MasterGuest
+  @ManyToOne(() => MasterGuest, { onDelete: "SET NULL", eager: true })
+  @JoinColumn({ name: "customer_id" })
+  customer?: MasterGuest;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  customer_preference: string | null;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  internal_note: string | null;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   total_amount: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  tax_amount: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  service_charge: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   discount: number;
@@ -31,14 +89,26 @@ export class Order {
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   final_amount: number;
 
-  @Column({ type: "varchar", length: 20, default: "pending" })
-  status: "pending" | "served" | "paid" | "cancelled";
+  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
 
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ name: "created_at", type: "timestamp" })
   created_at: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
+  @Column({ type: "int", nullable: true })
+  created_by: number;
+
+  @UpdateDateColumn({ name: "updated_at", type: "timestamp" })
   updated_at: Date;
+
+  @Column({ type: "int", nullable: true })
+  updated_by: number;
+
+  @DeleteDateColumn({ name: "deleted_at", type: "timestamp" })
+  deleted_at: Date | null;
+
+  @Column({ type: "int", nullable: true })
+  deleted_by: number | null;
 
   //relation with order items
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
