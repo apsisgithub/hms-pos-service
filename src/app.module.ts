@@ -15,6 +15,7 @@ import { CounterModule } from "./modules/counter/counter.module";
 import { ProductModule } from "./modules/product/product.module";
 import { ComboMealModule } from "./modules/combo-meal/combo-meal.module";
 import { KitchenModule } from "./modules/kitchen/kitchen.module";
+import { OrderModule } from "./modules/order/order.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { KitchenModule } from "./modules/kitchen/kitchen.module";
     KitchenModule,
     ProductModule,
     ComboMealModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

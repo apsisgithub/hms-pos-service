@@ -27,6 +27,7 @@ import { RolesGuard } from "src/common/guards/roles.guard";
 import { getCurrentUser } from "src/common/utils/user.util";
 import { OutletFilterDto } from "./dto/outlet-filter.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
+import { OutletDropdownDto } from "./dto/outlet-dropdown.dto";
 
 @ApiTags("Outlets")
 @ApiBearerAuth()
@@ -53,6 +54,11 @@ export class OutletController {
     @Query() filter: OutletFilterDto
   ): Promise<PaginatedResult<Outlet>> {
     return this.service.findAll(filter);
+  }
+
+  @Get("/dropdown")
+  async dropdown(@Query() filter: OutletDropdownDto): Promise<any> {
+    return await this.service.getOutletDropdown(filter);
   }
 
   @Get(":uuid")

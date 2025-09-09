@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { UpdateOutletDto } from "./dto/update-outlet.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
 import { OutletFilterDto } from "./dto/outlet-filter.dto";
+import { OutletDropdownDto } from "./dto/outlet-dropdown.dto";
 
 @Injectable()
 export class OutletService {
@@ -134,5 +135,29 @@ export class OutletService {
 
     // Hard remove (permanently deletes)
     await this.outletRepo.remove(outlet);
+  }
+
+  async getOutletDropdown(filter: OutletDropdownDto): Promise<any[]> {
+    const { sbu_id, search } = filter;
+
+    const query = this.outletRepo
+      .createQueryBuilder("outlet")
+      .where("outlet.deleted_at IS NULL");
+
+    if (sbu_id) {
+      query.andWhere("outlet.sbu_id = :sbu_id", { sbu_id });
+    }
+
+    if (search) {
+      query.andWhere("outlet.name LIKE :search", { search: `%${search}%` });
+    }
+
+    const outlets = await query.orderBy("outlet.name", "ASC").getMany();
+
+    // Transform into dropdown format
+    return outlets.map((outlet) => ({
+      label: outlet.name, // for dropdown UI
+      value: outlet.id, // use uuid instead of id
+    }));
   }
 }

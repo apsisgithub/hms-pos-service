@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { slugify } from "transliteration";
 import { CategoryFilterDto } from "./dto/filter-category.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
-
+import { CategoryDropdownDto } from "./dto/dropdown.dto";
 @Injectable()
 export class CategoryService {
   constructor(
@@ -249,5 +249,46 @@ export class CategoryService {
 
     // Permanently delete
     await this.categoryRepo.delete(category.id);
+  }
+
+  //category Dropdown
+  async getCategoryDropdown(filter: CategoryDropdownDto): Promise<any[]> {
+    const { sbu_id, outlet_id, parent_id, search } = filter;
+
+    const query = this.categoryRepo
+      .createQueryBuilder("category")
+      .leftJoinAndSelect("category.parent", "parent")
+      .where("category.deleted_at IS NULL");
+
+    if (sbu_id) {
+      query.andWhere("category.sbu_id = :sbu_id", { sbu_id });
+    }
+
+    if (outlet_id) {
+      query.andWhere("category.outlet_id = :outlet_id", { outlet_id });
+    }
+
+    if (parent_id && parent_id > 0) {
+      query.andWhere("category.parent_id = :parent_id", { parent_id });
+    }
+
+    if (search) {
+      query.andWhere("category.name LIKE :search", { search: `%${search}%` });
+    }
+
+    const categories = await query.orderBy("category.name", "ASC").getMany();
+
+    // Build nested dropdown
+    const buildTree = (parentId: number | null = null) => {
+      return categories
+        .filter((cat) => (cat.parent ? cat.parent.id : null) === parentId)
+        .map((cat) => ({
+          label: cat.name, // 🔑 ready for dropdown UI (AntD, Material UI)
+          value: cat.uuid, // use uuid instead of id
+          children: buildTree(cat.id),
+        }));
+    };
+
+    return buildTree(null);
   }
 }
