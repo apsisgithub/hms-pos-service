@@ -92,7 +92,7 @@ export class CounterController {
     }
   }
 
-  @Delete(":uuid/soft")
+  @Delete(":uuid")
   @ApiOperation({ summary: "Soft delete a POS counter" })
   async softDelete(@Param("uuid") uuid: string): Promise<void> {
     try {

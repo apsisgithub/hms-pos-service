@@ -73,17 +73,6 @@ export class PosTableController {
     return await this.tableService.findOne(uuid);
   }
 
-  @Get(":tableName/findByName")
-  @ApiOperation({ summary: "Get a POS table by its name" })
-  @ApiParam({
-    name: "tableName",
-    description: "Name of the table",
-    required: true,
-  })
-  async findByName(@Param("tableName") tableName: string): Promise<PosTable> {
-    return await this.tableService.findByName(tableName);
-  }
-
   @Patch(":uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Update a POS table by ID" })
@@ -99,7 +88,7 @@ export class PosTableController {
     return this.tableService.update(uuid, updateDto, +userId);
   }
 
-  @Delete("soft/:uuid")
+  @Delete(":uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Soft delete a POS table by ID" })
   async softDelete(@Param("uuid") uuid: string): Promise<void> {

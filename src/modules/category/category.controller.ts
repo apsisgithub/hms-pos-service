@@ -97,8 +97,8 @@ export class CategoryController {
     return this.categoryService.update(uuid, updateDto, +userId);
   }
 
-  @Delete("soft/:uuid")
-  softDelete(@Param("uuid") uuid: string) {
+  @Delete(":uuid")
+  async softDelete(@Param("uuid") uuid: string): Promise<void | any> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
@@ -106,8 +106,8 @@ export class CategoryController {
     return this.categoryService.softDelete(uuid, +userId);
   }
 
-  @Put("restore/:uuid")
-  restore(@Param("uuid") uuid: string) {
+  @Put(":uuid/restore")
+  async restore(@Param("uuid") uuid: string): Promise<Category | any> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
@@ -115,24 +115,8 @@ export class CategoryController {
     return this.categoryService.restore(uuid, +userId);
   }
 
-  @Delete("hard/:uuid")
-  hardDelete(@Param("uuid") uuid: string) {
-    return this.categoryService.hardDelete(uuid);
+  @Delete(":uuid/hard")
+  async hardDelete(@Param("uuid") uuid: string): Promise<void> {
+    return await this.categoryService.hardDelete(uuid);
   }
-
-  // @Get("encrypt/:value")
-  // async encryptTest(@Param("value") value: string) {
-  //   const encrypted = apsisEncrypt(value);
-  //   return { original: value, encrypted };
-  // }
-
-  // @Get("decrypt/:value")
-  // async decryptTest(@Param("value") value: string) {
-  //   try {
-  //     const decrypted = apsisDecrypt(value);
-  //     return { encrypted: value, decrypted };
-  //   } catch (error) {
-  //     return { error: "Failed to decrypt" };
-  //   }
-  // }
 }
