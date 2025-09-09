@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from "typeorm";
+import { Product } from "./products.entity";
 
 @Entity("pos_categories")
 export class Category {
@@ -22,6 +23,9 @@ export class Category {
 
   @Column({ type: "int", nullable: false })
   sbu_id: number;
+
+  @Column({ type: "int", nullable: false })
+  outlet_id: number;
 
   @Column({ nullable: false })
   name: string;
@@ -41,7 +45,7 @@ export class Category {
   parent?: Category | null;
 
   @Column({ type: "int", nullable: true })
-  parent_id?: number;
+  parent_id?: number | null;
 
   // Children categories
   @OneToMany(() => Category, (category) => category.parent)
@@ -64,4 +68,8 @@ export class Category {
 
   @Column({ type: "int", nullable: true })
   deleted_by?: number | null;
+
+  // products relation
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 }

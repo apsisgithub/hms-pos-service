@@ -1,7 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
+import {
+  IsBoolean,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from "class-validator";
 
-export class PosWaiterFilterDto {
+export class WaiterFilterDto {
   @ApiProperty({
     description: "Page number for pagination",
     example: 1,
@@ -48,4 +56,8 @@ export class PosWaiterFilterDto {
   @IsNumber()
   @IsInt()
   outlet_id?: number;
+
+  @ApiPropertyOptional({ enum: ["Yes", "No"] })
+  @IsOptional()
+  is_deleted?: "Yes" | "No";
 }

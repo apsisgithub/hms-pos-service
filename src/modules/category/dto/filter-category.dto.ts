@@ -1,5 +1,12 @@
-import { IsOptional, IsInt, IsString, Min } from "class-validator";
-import { Type } from "class-transformer";
+import {
+  IsOptional,
+  IsInt,
+  IsString,
+  Min,
+  IsBoolean,
+  IsNumber,
+} from "class-validator";
+import { Transform, Type } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CategoryFilterDto {
@@ -43,4 +50,34 @@ export class CategoryFilterDto {
   @Type(() => Number)
   @IsInt()
   parent_id?: number;
+
+  @ApiPropertyOptional({
+    description: "Include deleted waiters in the results",
+    enum: ["yes", "no"],
+    example: "no",
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value == "yes") return Boolean(true);
+    if (value == "no") return Boolean(false);
+    return value;
+  })
+  @IsBoolean()
+  is_deleted?: boolean | string;
+
+  @ApiPropertyOptional({
+    description: "Identifier for the SBU in the SaaS application",
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  sbu_id?: number;
+
+  @ApiPropertyOptional({
+    description: "Identifier for the OUtlet specific category",
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  outlet_id?: number;
 }

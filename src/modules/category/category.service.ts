@@ -51,9 +51,10 @@ export class CategoryService {
 
     // Create new category entity
     const category = this.categoryRepo.create({
-      uuid: uuidv4(),
+      ...dto,
+      parent_id: dto.parent_id && dto.parent_id > 0 ? dto.parent_id : null,
       slug,
-      name: dto.name,
+      uuid: uuidv4(),
       created_by: userId,
     });
 
@@ -88,6 +89,22 @@ export class CategoryService {
 
     if (parent_id !== undefined) {
       query.andWhere("category.parent_id = :parent_id", { parent_id });
+    }
+
+    if (filter.is_deleted === "yes") {
+      query.withDeleted().andWhere("category.deleted_at IS NOT NULL");
+    } else {
+      query.andWhere("category.deleted_at IS NULL");
+    }
+
+    if (filter.sbu_id && filter.sbu_id > 0) {
+      query.andWhere("category.sbu_id = :sbu_id", { sbu_id: filter.sbu_id });
+    }
+
+    if (filter.outlet_id && filter.outlet_id > 0) {
+      query.andWhere("category.outlet_id = :outlet_id", {
+        outlet_id: filter.outlet_id,
+      });
     }
 
     const [data, total] = await query
@@ -163,6 +180,7 @@ export class CategoryService {
       // Merge DTO into entity and track updater
       Object.assign(category, {
         ...rest,
+        parent_id: parent_id && parent_id > 0 ? parent_id : null,
         slug,
         updated_by: userId, // Track who updated
       });
@@ -197,7 +215,7 @@ export class CategoryService {
     await this.categoryRepo.save(category);
 
     // Perform soft delete
-    await this.categoryRepo.softDelete(uuid);
+    await this.categoryRepo.softDelete(category.id);
   }
 
   async restore(uuid: string, userId: number): Promise<void> {
@@ -219,7 +237,7 @@ export class CategoryService {
     await this.categoryRepo.save(category);
 
     // Restore soft-deleted entity
-    await this.categoryRepo.restore(uuid);
+    await this.categoryRepo.restore(category.id);
   }
 
   async hardDelete(uuid: string): Promise<void> {

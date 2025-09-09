@@ -1,49 +1,82 @@
 import {
-  Entity,
   Column,
-  OneToMany,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
   ManyToOne,
   JoinColumn,
-  Generated,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import { PosWaiter } from "./waiter.entity";
-import { PosTable } from "./table.entity";
+import { ApiProperty } from "@nestjs/swagger";
 import { MasterSbu } from "../master/master_sbu.entity";
-import { CoreEntity } from "src/utils/core-entity";
 import { Outlet } from "./outlet.entity";
 
 @Entity("pos_counters")
-export class PosCounter extends CoreEntity {
-  @Column({ type: "uuid", unique: true })
-  @Generated("uuid")
+export class PosCounter {
+  @ApiProperty()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  // MySQL: default UUID() at DB level — let DB generate if omitted
+  @ApiProperty()
+  @Column({ type: "char", length: 36, unique: true, default: () => "UUID()" })
   uuid: string;
 
+  @ApiProperty()
   @Column({ type: "int" })
   sbu_id: number;
 
+  @ApiProperty()
   @Column({ type: "int" })
   outlet_id: number;
 
+  @ApiProperty()
   @Column({ type: "varchar", length: 255 })
   name: string;
 
+  @ApiProperty({ required: false, nullable: true })
   @Column({ type: "varchar", length: 255, nullable: true })
-  location: string;
+  location?: string;
 
+  @ApiProperty({ required: false, nullable: true })
   @Column({ type: "text", nullable: true })
-  description: string;
+  description?: string;
 
-  @OneToMany(() => PosTable, (table) => table.outlet)
-  tables: PosTable[];
+  @ApiProperty()
+  @CreateDateColumn({ type: "datetime", precision: 6 })
+  created_at: Date;
 
-  @OneToMany(() => PosWaiter, (waiter) => waiter.outlet)
-  waiters: PosWaiter[];
+  @ApiProperty()
+  @UpdateDateColumn({ type: "datetime", precision: 6 })
+  updated_at: Date;
 
-  @ManyToOne(() => MasterSbu, (sbu) => sbu.counters)
+  @ApiProperty({ required: false, nullable: true })
+  @DeleteDateColumn({ type: "datetime", precision: 6, nullable: true })
+  deleted_at?: Date | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Column({ type: "int", nullable: true })
+  created_by?: number | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Column({ type: "int", nullable: true })
+  updated_by?: number | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  @Column({ type: "int", nullable: true })
+  deleted_by?: number | null;
+
+  // Optional relations (not required, but nice to have)
+  @ManyToOne(() => MasterSbu, (s) => (s as any).counters, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: "sbu_id" })
-  sbu: MasterSbu;
+  sbu?: MasterSbu;
 
-  @ManyToOne(() => Outlet, (outlet) => outlet.counters)
-  @JoinColumn({ name: "sbu_id" })
-  outlet: MasterSbu;
+  @ManyToOne(() => Outlet, (o) => (o as any).counters, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ name: "outlet_id" })
+  outlet?: Outlet;
 }

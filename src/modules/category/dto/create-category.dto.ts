@@ -32,4 +32,12 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsNumber()
   sbu_id?: number;
+
+  @ApiPropertyOptional({
+    description: "Identifier for the OUtlet specific category",
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  outlet_id?: number;
 }

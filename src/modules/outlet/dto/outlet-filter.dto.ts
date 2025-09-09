@@ -1,6 +1,6 @@
-import { IsInt, IsOptional, IsString, Min } from "class-validator";
+import { IsBoolean, IsInt, IsOptional, IsString, Min } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 export class OutletFilterDto {
   @ApiPropertyOptional({
@@ -34,4 +34,18 @@ export class OutletFilterDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    description: "Include deleted waiters in the results",
+    enum: ["yes", "no"],
+    example: "no",
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value == "yes") return Boolean(true);
+    if (value == "no") return Boolean(false);
+    return value;
+  })
+  @IsBoolean()
+  is_deleted?: boolean | string;
 }

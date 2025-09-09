@@ -100,7 +100,7 @@ export class OutletService {
       const outlet = await this.findOne(uuid);
       outlet.deleted_by = userId;
       await this.outletRepo.save(outlet);
-      await this.outletRepo.softDelete(uuid);
+      await this.outletRepo.softDelete(outlet.id);
     } catch (error) {
       throw new BadRequestException(
         `Failed to delete outlet: ${error.message}`
@@ -121,7 +121,7 @@ export class OutletService {
 
     await this.outletRepo.save(outlet);
 
-    await this.outletRepo.restore(uuid);
+    await this.outletRepo.restore(outlet.id);
   }
 
   // Hard delete outlet
