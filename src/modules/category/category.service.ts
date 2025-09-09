@@ -283,8 +283,8 @@ export class CategoryService {
       return categories
         .filter((cat) => (cat.parent ? cat.parent.id : null) === parentId)
         .map((cat) => ({
-          label: cat.name, // 🔑 ready for dropdown UI (AntD, Material UI)
-          value: cat.uuid, // use uuid instead of id
+          label: cat.name,
+          value: cat.id,
           children: buildTree(cat.id),
         }));
     };
