@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PaginatedResult } from "src/common/utils/paginated_result";
@@ -6,20 +10,26 @@ import { CreateTableDto } from "./dto/create-table.dto";
 import { UpdateTableDto } from "./dto/update-table.dto";
 import { TableFilterDto } from "./dto/filter-table.dto";
 import { PosTable } from "src/entities/pos/table.entity";
+// import { getCurrentUser } from "src/common/utils/user.util";
 
 @Injectable()
 export class PosTableService {
   constructor(
     @InjectRepository(PosTable)
-    private readonly posTableRepo: Repository<PosTable>
+    private readonly posTable: Repository<PosTable>
   ) {}
 
   async create(dto: CreateTableDto, userId: number): Promise<PosTable> {
-    const newTable = this.posTableRepo.create({
-      ...dto,
-      created_by: userId,
-    });
-    return this.posTableRepo.save(newTable);
+    try {
+      const newTable = this.posTable.create({
+        ...dto,
+        created_by: +userId,
+      });
+
+      return this.posTable.save(newTable);
+    } catch (error) {
+      throw new NotFoundException("Table not found");
+    }
   }
 
   async findList(filter: TableFilterDto): Promise<PaginatedResult<PosTable>> {
@@ -32,7 +42,7 @@ export class PosTableService {
       floor_id,
     } = filter;
 
-    const query = this.posTableRepo
+    const query = this.posTable
       .createQueryBuilder("posTable")
       .leftJoinAndSelect("posTable.sbu", "sbu")
       .leftJoinAndSelect("posTable.outlet", "outlet")
@@ -72,10 +82,10 @@ export class PosTableService {
     };
   }
 
-  async findOne(id: number): Promise<PosTable | null> {
-    const table = await this.posTableRepo.findOne({
-      where: { id },
-      relations: ["sbu", "outlet", "floor"],
+  async findOne(uuid: string): Promise<PosTable | null> {
+    const table = await this.posTable.findOne({
+      where: { uuid },
+      // relations: ["sbu", "outlet", "floor"],
       withDeleted: true,
     });
     if (!table) {
@@ -85,7 +95,7 @@ export class PosTableService {
   }
 
   async findByName(tableName: string): Promise<PosTable> {
-    const table = await this.posTableRepo.findOne({
+    const table = await this.posTable.findOne({
       where: { table_name: tableName },
       relations: ["sbu", "outlet", "floor"],
       withDeleted: true,
@@ -97,52 +107,72 @@ export class PosTableService {
   }
 
   async update(
-    id: number,
+    uuid: string,
     dto: UpdateTableDto,
-    userId: number
+    userId
   ): Promise<PosTable | null> {
-    const table = await this.posTableRepo.findOne({ where: { id } });
-    if (!table) {
+    try {
+      const table = await this.posTable.findOne({ where: { uuid } });
+      if (!table) {
+        throw new NotFoundException("Table not found");
+      }
+
+      Object.assign(table, {
+        ...dto,
+        updated_by: +userId,
+      });
+
+      return this.posTable.save(table);
+    } catch (error) {
       throw new NotFoundException("Table not found");
     }
-
-    Object.assign(table, {
-      ...dto,
-      updated_by: userId,
-    });
-
-    return this.posTableRepo.save(table);
   }
 
-  async softDelete(id: number, userId: number): Promise<void> {
-    const table = await this.posTableRepo.findOne({ where: { id } });
-    if (!table) {
+  async softDelete(uuid: string, userId: number): Promise<void> {
+    try {
+      const table = await this.posTable.findOne({ where: { uuid } });
+      if (!table) {
+        throw new NotFoundException("Table not found");
+      }
+
+      table.deleted_by = userId;
+      await this.posTable.save(table);
+
+      await this.posTable.softDelete(table.id);
+    } catch (error) {
       throw new NotFoundException("Table not found");
     }
-
-    table.deleted_by = userId;
-    await this.posTableRepo.save(table);
-
-    await this.posTableRepo.softDelete(id);
   }
 
-  async restore(id: number, userId: number): Promise<void> {
-    const table = await this.posTableRepo.findOne({
-      where: { id },
-      withDeleted: true,
-    });
-    if (!table) {
+  async restore(uuid: string, userId: number): Promise<void> {
+    try {
+      const table = await this.posTable.findOne({
+        where: { uuid },
+        withDeleted: true,
+      });
+
+      if (!table) {
+        throw new NotFoundException("Table not found");
+      }
+
+      table.deleted_by = null;
+      table.deleted_at = null;
+      table.updated_by = userId;
+      await this.posTable.save(table);
+
+      await this.posTable.restore(table.id);
+    } catch (error) {
       throw new NotFoundException("Table not found");
     }
-
-    table.deleted_by = null;
-    table.updated_by = userId;
-    await this.posTableRepo.save(table);
-
-    await this.posTableRepo.restore(id);
   }
 
-  async hardDelete(id: number): Promise<void> {
-    await this.posTableRepo.delete(id);
+  async hardDelete(uuid: string): Promise<void> {
+    const table = await this.posTable.findOne({ where: { uuid } });
+    if (!table) {
+      throw new NotFoundException(`table with uuid ${uuid} not found`);
+    }
+
+    // Permanently delete
+    await this.posTable.delete(table.id);
   }
 }

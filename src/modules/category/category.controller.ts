@@ -28,9 +28,9 @@ import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { Category } from "src/entities/pos/category.entity";
 import { CategoryFilterDto } from "./dto/filter-category.dto";
-import { apsisDecrypt, apsisEncrypt } from "src/common/utils/apsis-crypto.util";
 import { PaginatedResult } from "src/common/utils/paginated_result";
-import { DecryptPipe } from "src/common/pipe/apsisDecryptor.pipe";
+// import { apsisDecrypt, apsisEncrypt } from "src/common/utils/apsis-crypto.util";
+// import { DecryptPipe } from "src/common/pipe/apsisDecryptor.pipe";
 
 @ApiTags("Category")
 @ApiBearerAuth()
@@ -40,7 +40,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiResponse({
     status: 201,
     description: "Category created successfully",
@@ -61,18 +61,15 @@ export class CategoryController {
     return await this.categoryService.findList(filter);
   }
 
-  @Get(":id")
+  @Get(":uuid")
   @ApiOperation({ summary: "Get a call status by ID" })
   @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the Call",
+    name: "uuid",
+    description: "uuid of the Call",
     required: true,
-    example: "2e",
   })
-  async findOne(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string
-  ): Promise<Category | any> {
-    return await this.categoryService.findOne(+id);
+  async findOne(@Param("uuid") uuid: string): Promise<Category | any> {
+    return await this.categoryService.findOne(uuid);
   }
 
   @Get(":slug/findBySlug")
@@ -80,16 +77,10 @@ export class CategoryController {
     return await this.categoryService.findBySlug(slug);
   }
 
-  @Patch(":id")
+  @Patch(":uuid")
   @ApiOperation({ summary: "Get a call status by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the Call",
-    required: true,
-    example: "2e",
-  })
   async update(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string,
+    @Param("uuid") uuid: string,
     @Body() updateDto: UpdateCategoryDto
   ): Promise<Category | any> {
     const userId = getCurrentUser("user_id");
@@ -97,63 +88,45 @@ export class CategoryController {
       throw new UnauthorizedException(`Sorry! unauthorized`);
     }
 
-    return this.categoryService.update(+id, updateDto, +userId);
+    return this.categoryService.update(uuid, updateDto, +userId);
   }
 
-  @Delete("soft/:id")
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the Call",
-    required: true,
-    example: "2e",
-  })
-  softDelete(@Param("id", new DecryptPipe({ key: "id" })) id: string) {
+  @Delete("soft/:uuid")
+  softDelete(@Param("uuid") uuid: string) {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
     }
-    return this.categoryService.softDelete(+id, +userId);
+    return this.categoryService.softDelete(uuid, +userId);
   }
 
-  @Put("restore/:id")
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the Call",
-    required: true,
-    example: "2e",
-  })
-  restore(@Param("id", new DecryptPipe({ key: "id" })) id: string) {
+  @Put("restore/:uuid")
+  restore(@Param("uuid") uuid: string) {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
     }
-    return this.categoryService.restore(+id, +userId);
+    return this.categoryService.restore(uuid, +userId);
   }
 
-  @Delete("hard/:id")
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the Call",
-    required: true,
-    example: "2e",
-  })
-  hardDelete(@Param("id", new DecryptPipe({ key: "id" })) id: string) {
-    return this.categoryService.hardDelete(+id);
+  @Delete("hard/:uuid")
+  hardDelete(@Param("uuid") uuid: string) {
+    return this.categoryService.hardDelete(uuid);
   }
 
-  @Get("encrypt/:value")
-  async encryptTest(@Param("value") value: string) {
-    const encrypted = apsisEncrypt(value);
-    return { original: value, encrypted };
-  }
+  // @Get("encrypt/:value")
+  // async encryptTest(@Param("value") value: string) {
+  //   const encrypted = apsisEncrypt(value);
+  //   return { original: value, encrypted };
+  // }
 
-  @Get("decrypt/:value")
-  async decryptTest(@Param("value") value: string) {
-    try {
-      const decrypted = apsisDecrypt(value);
-      return { encrypted: value, decrypted };
-    } catch (error) {
-      return { error: "Failed to decrypt" };
-    }
-  }
+  // @Get("decrypt/:value")
+  // async decryptTest(@Param("value") value: string) {
+  //   try {
+  //     const decrypted = apsisDecrypt(value);
+  //     return { encrypted: value, decrypted };
+  //   } catch (error) {
+  //     return { error: "Failed to decrypt" };
+  //   }
+  // }
 }

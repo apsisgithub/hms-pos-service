@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { CoreEntity } from "src/utils/core-entity";
 import { PosTable } from "./table.entity";
-import { PosWaiter } from "./waiter.entity";
+import { Waiter } from "./waiter.entity";
 
 export enum TableWaiterStatus {
   Active = "Active", // currently serving
@@ -21,9 +21,9 @@ export class TableWaiterAssignment extends CoreEntity {
   @Column({ type: "int" })
   waiter_id: number;
 
-  @ManyToOne(() => PosWaiter, (waiter) => waiter.id)
+  @ManyToOne(() => Waiter, (waiter) => waiter.id)
   @JoinColumn({ name: "waiter_id" })
-  waiter: PosWaiter;
+  waiter: Waiter;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   assigned_at: Date;

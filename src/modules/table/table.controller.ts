@@ -67,18 +67,10 @@ export class PosTableController {
     return await this.tableService.findList(filter);
   }
 
-  @Get(":id")
+  @Get(":uuid")
   @ApiOperation({ summary: "Get a POS table by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the table",
-    required: true,
-    example: "2e",
-  })
-  async findOne(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string
-  ): Promise<PosTable | null> {
-    return await this.tableService.findOne(+id);
+  async findOne(@Param("uuid") uuid: string): Promise<PosTable | null> {
+    return await this.tableService.findOne(uuid);
   }
 
   @Get(":tableName/findByName")
@@ -92,17 +84,11 @@ export class PosTableController {
     return await this.tableService.findByName(tableName);
   }
 
-  @Patch(":id")
+  @Patch(":uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Update a POS table by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the table",
-    required: true,
-    example: "2e",
-  })
   async update(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string,
+    @Param("uuid") uuid: string,
     @Body() updateDto: UpdateTableDto
   ): Promise<PosTable | null> {
     const userId = getCurrentUser("user_id");
@@ -110,59 +96,35 @@ export class PosTableController {
       throw new UnauthorizedException(`Sorry! Unauthorized`);
     }
 
-    return this.tableService.update(+id, updateDto, +userId);
+    return this.tableService.update(uuid, updateDto, +userId);
   }
 
-  @Delete("soft/:id")
+  @Delete("soft/:uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Soft delete a POS table by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the table",
-    required: true,
-    example: "2e",
-  })
-  async softDelete(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string
-  ): Promise<void> {
+  async softDelete(@Param("uuid") uuid: string): Promise<void> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! Unauthorized`);
     }
-    return this.tableService.softDelete(+id, +userId);
+    return this.tableService.softDelete(uuid, +userId);
   }
 
-  @Put("restore/:id")
+  @Put("restore/:uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Restore a soft-deleted POS table by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the table",
-    required: true,
-    example: "2e",
-  })
-  async restore(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string
-  ): Promise<void> {
+  async restore(@Param("uuid") uuid: string): Promise<void> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! Unauthorized`);
     }
-    return this.tableService.restore(+id, +userId);
+    return this.tableService.restore(uuid, +userId);
   }
 
-  @Delete("hard/:id")
+  @Delete("hard/:uuid")
   @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Hard delete a POS table by ID" })
-  @ApiParam({
-    name: "id",
-    description: "Encrypted ID of the table",
-    required: true,
-    example: "2e",
-  })
-  async hardDelete(
-    @Param("id", new DecryptPipe({ key: "id" })) id: string
-  ): Promise<void> {
-    return this.tableService.hardDelete(+id);
+  async hardDelete(@Param("uuid") uuid: string): Promise<void> {
+    return this.tableService.hardDelete(uuid);
   }
 }

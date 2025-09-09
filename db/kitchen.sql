@@ -1,0 +1,19 @@
+CREATE TABLE `pos_kitchens` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `sbu_id` INT NOT NULL DEFAULT 1,
+  `uuid` CHAR(36) NOT NULL UNIQUE,
+  `name` VARCHAR(255) NOT NULL,
+  `location` VARCHAR(255) NOT NULL,
+  `type` ENUM('KITCHEN','BAR','DESSERT','COFFEE','JUICE','OTHER') NOT NULL DEFAULT 'KITCHEN',
+  `outlet_id` INT NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT TRUE,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` TIMESTAMP NULL DEFAULT NULL,
+  `created_by` INT NULL,
+  `updated_by` INT NULL,
+  `deleted_by` INT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_pos_kitchens_uuid` (`uuid`),
+  CONSTRAINT `FK_pos_kitchens_outlet` FOREIGN KEY (`outlet_id`) REFERENCES `pos_outlets` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

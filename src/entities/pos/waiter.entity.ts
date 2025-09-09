@@ -1,21 +1,29 @@
 import {
   Entity,
   Column,
-  OneToMany,
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Generated,
 } from "typeorm";
 import { MasterSbu } from "../master/master_sbu.entity";
-import { PosOutlet } from "./outlet.entity";
+import { Outlet } from "./outlet.entity";
 
 @Entity("pos_waiters")
-export class PosWaiter {
+export class Waiter {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
+
+  @ManyToOne(() => MasterSbu, (sbu) => sbu.waiters)
+  @JoinColumn({ name: "sbu_id" })
+  sbu: MasterSbu;
 
   @Column({ type: "int" })
   sbu_id: number;
@@ -26,8 +34,11 @@ export class PosWaiter {
   @Column({ type: "varchar", length: 100 })
   name: string;
 
-  @Column({ type: "varchar", length: 50, unique: true })
+  @Column({ type: "varchar", length: 50, nullable: true })
   employee_code: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  picture: string;
 
   @Column({ type: "varchar", length: 20, nullable: true })
   phone: string;
@@ -48,13 +59,9 @@ export class PosWaiter {
   deleted_at: Date;
 
   @Column({ type: "int", nullable: true })
-  deleted_by: number;
+  deleted_by: number | null;
 
-  @ManyToOne(() => MasterSbu, (sbu) => sbu.waiters)
-  @JoinColumn({ name: "sbu_id" })
-  sbu: MasterSbu;
-
-  @ManyToOne(() => PosOutlet, (outlet) => outlet.waiters)
+  @ManyToOne(() => Outlet, (outlet) => outlet.waiters)
   @JoinColumn({ name: "outlet_id" })
-  outlet: PosOutlet;
+  outlet: Outlet;
 }

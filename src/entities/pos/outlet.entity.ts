@@ -8,22 +8,37 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
+  Generated,
 } from "typeorm";
-import { PosWaiter } from "./waiter.entity";
+import { Waiter } from "./waiter.entity";
 import { PosTable } from "./table.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { PosCounter } from "./counter.entity";
+import { Product } from "./products.entity";
 
 @Entity("pos_outlets")
-export class PosOutlet {
+export class Outlet {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
 
   @Column({ type: "int" })
   sbu_id: number;
 
   @Column({ type: "varchar", length: 255 })
   name: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  logo: string;
+
+  @Column({ type: "varchar", length: 155, nullable: true })
+  email: string;
+
+  @Column({ type: "varchar", length: 55, nullable: true })
+  phone: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   location: string;
@@ -47,13 +62,13 @@ export class PosOutlet {
   deleted_at: Date;
 
   @Column({ type: "int", nullable: true })
-  deleted_by: number;
+  deleted_by: number | null;
 
   @OneToMany(() => PosTable, (table) => table.outlet)
   tables: PosTable[];
 
-  @OneToMany(() => PosWaiter, (waiter) => waiter.outlet)
-  waiters: PosWaiter[];
+  @OneToMany(() => Waiter, (waiter) => waiter.outlet)
+  waiters: Waiter[];
 
   @ManyToOne(() => MasterSbu, (sbu) => sbu.outlets)
   @JoinColumn({ name: "sbu_id" })
@@ -61,4 +76,7 @@ export class PosOutlet {
 
   @OneToMany(() => PosCounter, (counter) => counter.outlet)
   counters: PosCounter[];
+
+  @OneToMany(() => Product, (product) => product.sbu)
+  products: Product[];
 }
