@@ -83,7 +83,7 @@ export class OutletController {
     return this.service.update(uuid, dto, +userId);
   }
 
-  @Delete(":uuid/soft")
+  @Delete(":uuid")
   @ApiOperation({ summary: "Soft delete outlet" })
   async softDelete(@Param("uuid") uuid: string): Promise<void> {
     const userId = getCurrentUser("user_id");

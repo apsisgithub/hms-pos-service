@@ -88,26 +88,26 @@ export class WaiterController {
     return this.waiterService.update(uuid, updateDto, +userId);
   }
 
-  @Delete("soft/:uuid")
-  softDelete(@Param("uuid") uuid: string) {
+  @Delete(":uuid")
+  async softDelete(@Param("uuid") uuid: string): Promise<any> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
     }
-    return this.waiterService.softDelete(uuid, +userId);
+    return await this.waiterService.softDelete(uuid, +userId);
   }
 
-  @Put("restore/:uuid")
-  restore(@Param("uuid") uuid: string) {
+  @Put(":uuid/restore")
+  async restore(@Param("uuid") uuid: string): Promise<any> {
     const userId = getCurrentUser("user_id");
     if (!userId) {
       throw new UnauthorizedException(`Sorry! unauthorized`);
     }
-    return this.waiterService.restore(uuid, +userId);
+    return await this.waiterService.restore(uuid, +userId);
   }
 
-  @Delete("hard/:uuid")
-  hardDelete(@Param("uuid") uuid: string) {
-    return this.waiterService.hardDelete(uuid);
+  @Delete(":uuid/hard")
+  async hardDelete(@Param("uuid") uuid: string): Promise<any> {
+    return await this.waiterService.hardDelete(uuid);
   }
 }
