@@ -7,7 +7,7 @@ import {
   IsNumber,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CategoryFilterDto {
   @ApiPropertyOptional({
@@ -36,7 +36,6 @@ export class CategoryFilterDto {
 
   @ApiPropertyOptional({
     description: "Search by category name",
-    example: "Electronics",
   })
   @IsOptional()
   @IsString()
@@ -44,7 +43,6 @@ export class CategoryFilterDto {
 
   @ApiPropertyOptional({
     description: "Filter by parent category ID (for subcategories)",
-    example: 5,
   })
   @IsOptional()
   @Type(() => Number)
@@ -65,19 +63,17 @@ export class CategoryFilterDto {
   @IsBoolean()
   is_deleted?: boolean | string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: "Identifier for the SBU in the SaaS application",
     example: 1,
   })
-  @IsOptional()
   @IsNumber()
-  sbu_id?: number;
+  sbu_id: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: "Identifier for the OUtlet specific category",
     example: 1,
   })
-  @IsOptional()
   @IsNumber()
-  outlet_id?: number;
+  outlet_id: number;
 }

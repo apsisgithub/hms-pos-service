@@ -29,6 +29,7 @@ import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { Category } from "src/entities/pos/category.entity";
 import { CategoryFilterDto } from "./dto/filter-category.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
+import { CategoryDropdownDto } from "./dto/dropdown.dto";
 // import { apsisDecrypt, apsisEncrypt } from "src/common/utils/apsis-crypto.util";
 // import { DecryptPipe } from "src/common/pipe/apsisDecryptor.pipe";
 
@@ -59,6 +60,11 @@ export class CategoryController {
     @Query() filter: CategoryFilterDto
   ): Promise<PaginatedResult<Category>> {
     return await this.categoryService.findList(filter);
+  }
+
+  @Get("/dropdown")
+  async dropdown(@Query() filter: CategoryDropdownDto): Promise<any> {
+    return await this.categoryService.getCategoryDropdown(filter);
   }
 
   @Get(":uuid")

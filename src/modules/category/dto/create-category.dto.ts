@@ -25,19 +25,15 @@ export class CreateCategoryDto {
   @IsNumber()
   parent_id?: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: "Identifier for the SBU in the SaaS application",
-    example: 1,
   })
-  @IsOptional()
   @IsNumber()
-  sbu_id?: number;
+  sbu_id: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: "Identifier for the OUtlet specific category",
-    example: 1,
   })
-  @IsOptional()
   @IsNumber()
-  outlet_id?: number;
+  outlet_id: number;
 }
