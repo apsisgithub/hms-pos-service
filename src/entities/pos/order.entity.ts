@@ -5,16 +5,19 @@ import {
   Entity,
   Generated,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+
 import { OrderItem } from "./order_items.entity";
 import { MasterRoom } from "../master/master_room.entity";
 import { MasterGuest } from "../master/master-guest.entity";
 import { Waiter } from "./waiter.entity";
+import { OrderToken } from "./order_token.entity";
+import { Outlet } from "./outlet.entity";
+import { PosTable } from "./table.entity";
 
 export enum OrderStatus {
   PENDING = "Pending",
@@ -26,6 +29,14 @@ export enum OrderStatus {
   HOLD = "Hold",
 }
 
+export enum OrderType {
+  DINE_IN = "Dine-in",
+  TAKE_AWAY = "Take Away",
+  PICKUP = "Pick-up",
+  ROOM_SERVICE = "Room Service",
+  ADVANCE_BOOKING = "Advance Booking",
+}
+
 @Entity("pos_orders")
 export class Order {
   @PrimaryGeneratedColumn()
@@ -35,11 +46,25 @@ export class Order {
   @Generated("uuid")
   uuid: string;
 
+  @Column({ type: "int", nullable: false })
+  outlet_id?: number;
+
+  @ManyToOne(() => Outlet, (item) => item.orders, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "order_item_id" })
+  outlet: Outlet;
+
   @Column({ type: "varchar", length: 50, unique: true })
   order_no: string; // e.g. ORD-20250907-001
 
+  @Column({ type: "enum", enum: OrderType, default: OrderType.DINE_IN })
+  order_type: OrderType;
+
   @Column({ type: "int", nullable: true })
   table_id?: number | null; // if dine-in
+
+  @ManyToOne(() => PosTable, (table) => table.orders, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "table_id" })
+  posTable: PosTable;
 
   @Column({ type: "int", nullable: true })
   waiter_id?: number | null;
@@ -75,10 +100,10 @@ export class Order {
   internal_note: string | null;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  total_amount: number;
+  subtotal: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  tax_amount: number;
+  tax: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   service_charge: number;
@@ -87,7 +112,7 @@ export class Order {
   discount: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  final_amount: number;
+  grand_total: number;
 
   @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
@@ -113,4 +138,7 @@ export class Order {
   //relation with order items
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true })
   items: OrderItem[];
+
+  @OneToMany(() => OrderToken, (item) => item.order, { cascade: true })
+  tokens: OrderToken[];
 }

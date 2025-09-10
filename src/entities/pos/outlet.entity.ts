@@ -10,11 +10,13 @@ import {
   PrimaryGeneratedColumn,
   Generated,
 } from "typeorm";
+
 import { Waiter } from "./waiter.entity";
 import { PosTable } from "./table.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { PosCounter } from "./counter.entity";
 import { Product } from "./products.entity";
+import { Order } from "./order.entity";
 
 @Entity("pos_outlets")
 export class Outlet {
@@ -79,4 +81,7 @@ export class Outlet {
 
   @OneToMany(() => Product, (product) => product.sbu)
   products: Product[];
+
+  @OneToMany(() => Order, (item) => item.outlet, { cascade: true })
+  orders: Order[];
 }

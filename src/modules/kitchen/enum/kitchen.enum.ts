@@ -6,3 +6,9 @@ export enum KitchenType {
   JUICE = "JUICE",
   OTHER = "OTHER",
 }
+
+export enum KitchenStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+  MAINTENANCE = "Maintenance",
+}
