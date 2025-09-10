@@ -18,10 +18,7 @@ export class KitchenService {
   // Create
   async create(dto: CreateKitchenDto, userId: number): Promise<Kitchen> {
     const kitchen = this.kitchenRepo.create({
-      name: dto.name,
-      type: dto.type ?? "KITCHEN",
-      outlet_id: dto.outlet_id ?? null,
-      is_active: dto.is_active ?? true,
+      ...dto,
       created_by: userId,
     });
     return this.kitchenRepo.save(kitchen);
@@ -85,7 +82,6 @@ export class KitchenService {
         name: dto.name ?? kitchen.name,
         type: dto.type ?? kitchen.type,
         outlet_id: dto.outlet_id ?? kitchen.outlet_id,
-        is_active: dto.is_active ?? kitchen.is_active,
         updated_by: userId,
       });
 
