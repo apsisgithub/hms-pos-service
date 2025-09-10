@@ -26,7 +26,16 @@ export class KitchenService {
 
   // Find all with pagination + filters
   async findAll(filter: FilterKitchenDto): Promise<PaginatedResult<Kitchen>> {
-    const { page = 1, limit = 10, search, is_deleted, is_active } = filter;
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      is_deleted,
+      is_open,
+      status,
+      type,
+      printer_enabled,
+    } = filter;
 
     const query = this.kitchenRepo.createQueryBuilder("kitchen").where("1=1");
 
@@ -34,16 +43,34 @@ export class KitchenService {
       query.andWhere("kitchen.name LIKE :search", { search: `%${search}%` });
     }
 
-    if (is_active === "Yes") {
-      query.andWhere("kitchen.is_active = :is_active", { is_active: 1 });
-    } else if (is_active === "No") {
-      query.andWhere("kitchen.is_active = :is_active", { is_active: 0 });
+    if (is_open === "Yes") {
+      query.andWhere("kitchen.is_open = :is_open", { is_open: 1 });
+    } else if (is_open === "No") {
+      query.andWhere("kitchen.is_open = :is_open", { is_open: 0 });
     }
 
     if (is_deleted === "Yes") {
       query.withDeleted().andWhere("kitchen.deleted_at IS NOT NULL");
     } else {
       query.andWhere("kitchen.deleted_at IS NULL");
+    }
+
+    if (status) {
+      query.andWhere("kitchen.status = :status", { status });
+    }
+
+    if (type) {
+      query.andWhere("kitchen.type = :type", { type });
+    }
+
+    if (printer_enabled === "Yes") {
+      query.andWhere("kitchen.printer_enabled = :printer_enabled", {
+        printer_enabled: 1,
+      });
+    } else if (printer_enabled === "No") {
+      query.andWhere("kitchen.printer_enabled = :printer_enabled", {
+        printer_enabled: 0,
+      });
     }
 
     const [data, total] = await query
@@ -78,12 +105,9 @@ export class KitchenService {
     if (!kitchen) throw new NotFoundException(`Kitchen ${uuid} not found`);
 
     return this.dataSource.transaction(async (manager) => {
-      await manager.getRepository(Kitchen).update(kitchen.id, {
-        name: dto.name ?? kitchen.name,
-        type: dto.type ?? kitchen.type,
-        outlet_id: dto.outlet_id ?? kitchen.outlet_id,
-        updated_by: userId,
-      });
+      await manager
+        .getRepository(Kitchen)
+        .update(kitchen.id, { ...dto, updated_by: userId });
 
       const updated = await manager
         .getRepository(Kitchen)
