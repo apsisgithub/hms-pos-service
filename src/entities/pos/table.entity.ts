@@ -18,6 +18,7 @@ import { Order } from "./order.entity";
 export enum TableStatus {
   Available = "Available",
   Occupied = "Occupied",
+  PARTIAL = "Partial",
   Hold = "Hold",
 }
 
@@ -36,8 +37,8 @@ export class PosTable {
   @Column({ type: "int" })
   outlet_id: number;
 
-  @Column({ type: "int" })
-  floor_id: number;
+  @Column({ type: "int", nullable: true })
+  floor_id: number | null;
 
   @ManyToOne(() => MasterFloor, (floor) => floor.tables)
   @JoinColumn({ name: "floor_id" })
