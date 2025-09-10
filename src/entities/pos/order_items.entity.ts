@@ -12,13 +12,18 @@ import { Order } from "./order.entity";
 import { OrderItemAddon } from "./order_item_addons.entity";
 import { OrderToken } from "./order_token.entity";
 
-export enum OrderType {
+export enum ItemStatus {
   PENDING = "Pending",
   PREPARING = "Preparing",
   COMPLETED = "Completed",
   SERVED = "Served",
   CANCELLED = "Cancelled",
   HOLD = "Hold",
+}
+
+export enum DiscountType {
+  FIXED = "Fixed",
+  PERCENTAGE = "Percentage",
 }
 
 @Entity("pos_order_items")
@@ -46,16 +51,18 @@ export class OrderItem {
 
   @Column({
     type: "enum",
-    enum: ["FIXED", "PERCENTAGE"],
-    default: "FIXED",
+    enum: DiscountType,
   })
-  discount_type: "FIXED" | "PERCENTAGE";
+  discount_type: DiscountType | null;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
-  discount: number;
+  discount: number | null;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
-  subtotal: number; // ((unit_price - discount) * quantity) + addons
+  subtotal: number; // (unit_price  * quantity)  + addons - discount
+
+  @Column({ type: "varchar", length: 20 })
+  remarks: string | null;
 
   @Column({ type: "timestamp", nullable: true })
   prepared_at: Date;
@@ -71,8 +78,8 @@ export class OrderItem {
 
   @Column({
     type: "enum",
-    enum: ["PENDING", "PREPARING", "SERVED", "CANCELLED"],
-    default: "PENDING",
+    enum: ItemStatus,
+    default: ItemStatus.PENDING,
   })
   status: string;
 
@@ -85,7 +92,7 @@ export class OrderItem {
   @JoinColumn({ name: "token_id" })
   kot: Order;
 
-  @OneToMany(() => OrderItemAddon, (addon) => addon.order_item, {
+  @OneToMany(() => OrderItemAddon, (addon) => addon.orderItem, {
     cascade: true,
   })
   addons: OrderItemAddon[];

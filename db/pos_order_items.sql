@@ -1,0 +1,20 @@
+CREATE TABLE `pos_order_items` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` BIGINT NOT NULL,
+  `product_id` INT NOT NULL,
+  `variant_id` INT NULL,
+  `token_id` BIGINT NULL,
+  `quantity` INT NOT NULL DEFAULT 1,
+  `unit_price` DECIMAL(10,2) NOT NULL,
+  `discount_type` ENUM('FIXED', 'PERCENTAGE') NOT NULL DEFAULT 'FIXED',
+  `discount` DECIMAL(10,2) NOT NULL DEFAULT 0,
+  `subtotal` DECIMAL(10,2) NOT NULL DEFAULT 0,
+  `remarks` VARCHAR(20) NULL,
+  `prepared_at` TIMESTAMP NULL DEFAULT NULL,
+  `served_at` TIMESTAMP NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` ENUM('PENDING','PREPARING','SERVED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  CONSTRAINT `FK_pos_order_items_order` FOREIGN KEY (`order_id`) REFERENCES `pos_orders`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_pos_order_items_token` FOREIGN KEY (`token_id`) REFERENCES `order_tokens`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

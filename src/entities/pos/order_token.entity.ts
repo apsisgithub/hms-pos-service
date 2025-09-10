@@ -23,7 +23,7 @@ export enum TokenStatus {
   CANCELLED = "CANCELLED",
 }
 
-@Entity("order_tokens")
+@Entity("pos_order_tokens")
 export class OrderToken {
   @PrimaryGeneratedColumn({ type: "bigint" })
   id: number;

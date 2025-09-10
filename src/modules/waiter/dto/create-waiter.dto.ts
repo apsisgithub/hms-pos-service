@@ -20,33 +20,9 @@ export class CreateWaiterDto {
   @IsInt()
   outlet_id: number;
 
-  @ApiProperty({ description: "Full name of the waiter", example: "John Doe" })
+  @ApiProperty({ description: "ID of the MasterUser", example: 1 })
   @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @ApiPropertyOptional({
-    description: "Unique employee code",
-    example: "EMP12345",
-  })
-  @IsOptional()
-  @IsString()
-  employee_code?: string;
-
-  @ApiPropertyOptional({
-    description: "Profile Picture",
-    example: "uploads/1756875108807-429572893.jpg",
-  })
-  @IsOptional()
-  @IsString()
-  picture?: string;
-
-  @ApiProperty({
-    description: "Phone number of the waiter",
-    example: "0123456789",
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  phone?: string;
+  @IsNumber()
+  @IsInt()
+  user_id: number;
 }
