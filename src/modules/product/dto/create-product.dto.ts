@@ -13,15 +13,23 @@ import {
 
 // ---------- VARIANT DTO ----------
 export class ProductVariantDto {
-  @ApiProperty({ example: "Medium", description: "Variant name" })
+  @ApiProperty({ description: "Variant name" })
   @IsString()
   variant_name: string;
 
-  @ApiProperty({ example: "PIZ-MED", description: "Variant SKU" })
+  @ApiProperty({ description: "Variant SKU" })
   @IsString()
   sku: string;
 
-  @ApiProperty({ example: 7.5, description: "Variant price" })
+  @ApiProperty({ description: "Base price" })
+  @IsNumber()
+  base_price: number;
+
+  @ApiProperty({ description: "Discount" })
+  @IsNumber()
+  discount: number;
+
+  @ApiProperty({ description: "Variant price" })
   @IsNumber()
   price: number;
 }
@@ -54,6 +62,10 @@ export class CreateProductDto {
   @ApiProperty({ example: 1, description: "Category ID (foreign key)" })
   @IsInt()
   category_id: number;
+
+  @ApiProperty({ example: 1, description: "Sub Category ID (foreign key)" })
+  @IsInt()
+  subcategory_id: number;
 
   @ApiPropertyOptional({
     example: "Grilled Chicken Burger",

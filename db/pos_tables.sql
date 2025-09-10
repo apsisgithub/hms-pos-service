@@ -3,11 +3,11 @@ CREATE TABLE `pos_tables` (
   `uuid` CHAR(36) NOT NULL UNIQUE DEFAULT (UUID()),
   `sbu_id` INT NOT NULL,
   `outlet_id` INT NOT NULL,
-  `floor_id` INT NOT NULL,
-  `table_name` VARCHAR(100) NOT NULL,
-  `table_short_code` VARCHAR(50) NOT NULL,
+  `floor_id` INT NULL,
+  `table_name` VARCHAR(150) NOT NULL,
+  `table_short_code` VARCHAR(100) NOT NULL,
   `capacity` INT NOT NULL,
-  `status` ENUM('Available', 'Occupied', 'Hold') NOT NULL DEFAULT 'Available',
+  `status` ENUM('Available','Occupied','Hold','Partial') NOT NULL DEFAULT 'Available',
   `remarks` TEXT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` INT NULL,
@@ -22,4 +22,4 @@ CREATE TABLE `pos_tables` (
     FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu` (`id`),
   CONSTRAINT `FK_pos_tables_outlet`
     FOREIGN KEY (`outlet_id`) REFERENCES `pos_outlets` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 

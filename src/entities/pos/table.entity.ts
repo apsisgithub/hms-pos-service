@@ -8,14 +8,17 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Generated,
+  OneToMany,
 } from "typeorm";
 import { MasterFloor } from "../master/master_floor.entity";
 import { Outlet } from "./outlet.entity";
 import { MasterSbu } from "../master/master_sbu.entity";
+import { Order } from "./order.entity";
 
 export enum TableStatus {
   Available = "Available",
   Occupied = "Occupied",
+  PARTIAL = "Partial",
   Hold = "Hold",
 }
 
@@ -34,8 +37,8 @@ export class PosTable {
   @Column({ type: "int" })
   outlet_id: number;
 
-  @Column({ type: "int" })
-  floor_id: number;
+  @Column({ type: "int", nullable: true })
+  floor_id: number | null;
 
   @ManyToOne(() => MasterFloor, (floor) => floor.tables)
   @JoinColumn({ name: "floor_id" })
@@ -81,4 +84,7 @@ export class PosTable {
   @ManyToOne(() => Outlet, (outlet) => outlet.tables)
   @JoinColumn({ name: "outlet_id" })
   outlet: Outlet;
+
+  @OneToMany(() => Order, (item) => item.posTable, { cascade: true })
+  orders: Order[];
 }

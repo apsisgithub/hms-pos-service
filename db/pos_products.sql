@@ -1,26 +1,29 @@
 CREATE TABLE `pos_products` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
   `uuid` CHAR(36) NOT NULL UNIQUE,
   `sbu_id` INT NOT NULL,
   `outlet_id` INT NOT NULL,
   `category_id` INT NOT NULL,
+  `subcategory_id` INT NOT NULL,
   `name` VARCHAR(255) NULL,
   `image` VARCHAR(200) NULL,
   `description` TEXT NULL,
   `menu_type` VARCHAR(25) NULL,
   `product_vat` DECIMAL(10,3) NOT NULL DEFAULT 0,
-  `special` INT DEFAULT 0,
-  `Offer_rate` INT DEFAULT 0 COMMENT '1=offer rate',
-  `offer_is_available` INT DEFAULT 0 COMMENT '1=offer available,0=No Offer',
+  `special` INT NOT NULL DEFAULT 0,
+  `Offer_rate` INT NOT NULL DEFAULT 0 COMMENT '1=offer rate',
+  `offer_is_available` INT NOT NULL DEFAULT 0 COMMENT '1=offer available,0=No Offer',
   `offer_start_date` DATE NULL,
   `offer_end_date` DATE NULL,
   `component` TEXT NULL,
   `Position` INT NULL,
   `kitchen_id` INT NOT NULL,
   `is_group` INT NULL,
-  `is_varient` INT DEFAULT 0,
+  `is_varient` INT NOT NULL DEFAULT 0,
+  `base_price` DECIMAL(10,2) NOT NULL,
+  `discount` DECIMAL(10,2) NOT NULL,
   `price` DECIMAL(10,2) NOT NULL,
-  `is_custom_qty` INT DEFAULT 0,
+  `is_custom_qty` INT NOT NULL DEFAULT 0,
   `cooked_time` TIME NOT NULL DEFAULT '00:00:00',
   `is_active` TINYINT(1) NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -30,14 +33,15 @@ CREATE TABLE `pos_products` (
   `updated_by` INT NULL,
   `deleted_by` INT NULL,
 
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_pos_products_uuid` (`uuid`),
-
-  KEY `IDX_pos_products_category_id` (`category_id`),
-  KEY `IDX_pos_products_sbu_id` (`sbu_id`),
-  KEY `IDX_pos_products_outlet_id` (`outlet_id`),
-
-  CONSTRAINT `FK_pos_products_category` FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`),
-  CONSTRAINT `FK_pos_products_sbu` FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu`(`id`),
-  CONSTRAINT `FK_pos_products_outlet` FOREIGN KEY (`outlet_id`) REFERENCES `outlets`(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  -- Foreign keys
+  CONSTRAINT `fk_products_category`
+    FOREIGN KEY (`category_id`) REFERENCES `pos_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_products_subcategory`
+    FOREIGN KEY (`subcategory_id`) REFERENCES `pos_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_products_kitchen`
+    FOREIGN KEY (`kitchen_id`) REFERENCES `pos_kitchens` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_products_outlet`
+    FOREIGN KEY (`outlet_id`) REFERENCES `pos_outlets` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_products_sbu`
+    FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

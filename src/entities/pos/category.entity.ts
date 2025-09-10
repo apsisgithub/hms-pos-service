@@ -69,7 +69,11 @@ export class Category {
   @Column({ type: "int", nullable: true })
   deleted_by?: number | null;
 
-  // products relation
+  // Relation for products where this is a main category
   @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
+  mainProducts: Product[];
+
+  // Relation for products where this is a subcategory
+  @OneToMany(() => Product, (product) => product.subcategory)
+  subProducts: Product[];
 }

@@ -37,10 +37,8 @@ export class Product {
   @Column({ name: "category_id", type: "int" })
   category_id: number;
 
-  // category relation
-  @ManyToOne(() => Category, (category) => category.products)
-  @JoinColumn({ name: "category_id" })
-  category: Category;
+  @Column({ name: "subcategory_id", type: "int", nullable: false })
+  subcategory_id: number;
 
   @Column({ name: "name", type: "varchar", length: 255, nullable: true })
   name: string | null;
@@ -113,6 +111,12 @@ export class Product {
   is_varient: number | null;
 
   @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  base_price: number;
+
+  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  discount: number;
+
+  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
   price: number;
 
   @Column({ name: "is_custom_qty", type: "int", default: 0 })
@@ -179,4 +183,12 @@ export class Product {
   @ManyToOne(() => Kitchen, (kitchen) => kitchen.products)
   @JoinColumn({ name: "kitchen_id" })
   kitchen: Kitchen;
+
+  @ManyToOne(() => Category, (category) => category.mainProducts)
+  @JoinColumn({ name: "category_id" })
+  category: Category;
+
+  @ManyToOne(() => Category, (category) => category.subProducts)
+  @JoinColumn({ name: "subcategory_id" })
+  subcategory: Category;
 }

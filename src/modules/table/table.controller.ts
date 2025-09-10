@@ -40,7 +40,7 @@ export class PosTableController {
   constructor(private readonly tableService: PosTableService) {}
 
   @Post()
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Create a new POS table" })
   @ApiResponse({
     status: 201,
@@ -74,7 +74,7 @@ export class PosTableController {
   }
 
   @Patch(":uuid")
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Update a POS table by ID" })
   async update(
     @Param("uuid") uuid: string,
@@ -89,7 +89,7 @@ export class PosTableController {
   }
 
   @Delete(":uuid")
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Soft delete a POS table by ID" })
   async softDelete(@Param("uuid") uuid: string): Promise<void> {
     const userId = getCurrentUser("user_id");
@@ -100,7 +100,7 @@ export class PosTableController {
   }
 
   @Put("restore/:uuid")
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Restore a soft-deleted POS table by ID" })
   async restore(@Param("uuid") uuid: string): Promise<void> {
     const userId = getCurrentUser("user_id");
@@ -111,7 +111,7 @@ export class PosTableController {
   }
 
   @Delete("hard/:uuid")
-  @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
+  // @Roles(RoleName.ADMIN, RoleName.SUPER_ADMIN)
   @ApiOperation({ summary: "Hard delete a POS table by ID" })
   async hardDelete(@Param("uuid") uuid: string): Promise<void> {
     return this.tableService.hardDelete(uuid);

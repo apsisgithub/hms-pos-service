@@ -1,6 +1,6 @@
 CREATE TABLE `pos_outlets` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `uuid` CHAR(36) NOT NULL UNIQUE DEFAULT (UUID()),
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `uuid` CHAR(36) NOT NULL UNIQUE,
   `sbu_id` INT NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `logo` VARCHAR(255) NULL,
@@ -14,7 +14,9 @@ CREATE TABLE `pos_outlets` (
   `updated_by` INT NULL,
   `deleted_at` TIMESTAMP NULL,
   `deleted_by` INT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `FK_pos_outlets_sbu`
-    FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu` (`id`)
+
+  -- Foreign key
+  CONSTRAINT `fk_outlets_sbu`
+    FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu`(`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
