@@ -1,6 +1,6 @@
 CREATE TABLE `pos_tables` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `uuid` CHAR(36) NOT NULL UNIQUE DEFAULT (UUID()),
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `uuid` CHAR(36) NOT NULL UNIQUE,
   `sbu_id` INT NOT NULL,
   `outlet_id` INT NOT NULL,
   `floor_id` INT NOT NULL,
@@ -15,11 +15,17 @@ CREATE TABLE `pos_tables` (
   `updated_by` INT NULL,
   `deleted_at` TIMESTAMP NULL,
   `deleted_by` INT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `FK_pos_tables_floor`
-    FOREIGN KEY (`floor_id`) REFERENCES `master_floor` (`id`),
-  CONSTRAINT `FK_pos_tables_sbu`
-    FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu` (`id`),
-  CONSTRAINT `FK_pos_tables_outlet`
-    FOREIGN KEY (`outlet_id`) REFERENCES `pos_outlets` (`id`)
+
+  -- Foreign Keys
+  CONSTRAINT `fk_tables_sbu`
+    FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu`(`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT `fk_tables_outlet`
+    FOREIGN KEY (`outlet_id`) REFERENCES `pos_outlets`(`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT `fk_tables_floor`
+    FOREIGN KEY (`floor_id`) REFERENCES `master_floors`(`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
