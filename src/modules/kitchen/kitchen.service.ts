@@ -37,7 +37,38 @@ export class KitchenService {
       printer_enabled,
     } = filter;
 
-    const query = this.kitchenRepo.createQueryBuilder("kitchen").where("1=1");
+    const query = this.kitchenRepo
+      .createQueryBuilder("kitchen")
+      .leftJoinAndSelect("kitchen.outlet", "outlet")
+      .leftJoinAndSelect("kitchen.sbu", "sbu")
+      .select([
+        "kitchen.id",
+        "kitchen.uuid",
+        "kitchen.sbu_id",
+        "kitchen.outlet_id",
+        "kitchen.name",
+        "kitchen.location",
+        "kitchen.type",
+        "kitchen.is_open",
+        "kitchen.opened_at",
+        "kitchen.closed_at",
+        "kitchen.printer_name",
+        "kitchen.printer_ip",
+        "kitchen.printer_port",
+        "kitchen.printer_enabled",
+        "kitchen.status",
+        "kitchen.created_at",
+        "kitchen.updated_at",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
+      .where("1=1");
 
     if (search && search.trim() !== "") {
       query.andWhere("kitchen.name LIKE :search", { search: `%${search}%` });
@@ -89,8 +120,40 @@ export class KitchenService {
   }
 
   // Find one by uuid
-  async findOne(uuid: string): Promise<Kitchen> {
-    const kitchen = await this.kitchenRepo.findOne({ where: { uuid } });
+  async findOne(uuid: string): Promise<any> {
+    const kitchen = this.kitchenRepo
+      .createQueryBuilder("kitchen")
+      .leftJoinAndSelect("kitchen.outlet", "outlet")
+      .leftJoinAndSelect("kitchen.sbu", "sbu")
+      .where("kitchen.uuid = :uuid", { uuid })
+      .select([
+        "kitchen.id",
+        "kitchen.uuid",
+        "kitchen.sbu_id",
+        "kitchen.outlet_id",
+        "kitchen.name",
+        "kitchen.location",
+        "kitchen.type",
+        "kitchen.is_open",
+        "kitchen.opened_at",
+        "kitchen.closed_at",
+        "kitchen.printer_name",
+        "kitchen.printer_ip",
+        "kitchen.printer_port",
+        "kitchen.printer_enabled",
+        "kitchen.status",
+        "kitchen.created_at",
+        "kitchen.updated_at",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
+      .getOne();
     if (!kitchen) throw new NotFoundException(`Kitchen ${uuid} not found`);
     return kitchen;
   }
