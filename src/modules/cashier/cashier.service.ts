@@ -45,10 +45,32 @@ export class CashierService {
       .leftJoinAndSelect("cashier.profile", "profile")
       .leftJoinAndSelect("cashier.outlet", "outlet")
       .leftJoinAndSelect("cashier.sbu", "sbu")
+      .select([
+        "cashier.id",
+        "cashier.uuid",
+        "cashier.sbu_id",
+        "cashier.outlet_id",
+        "cashier.user_id",
+        "cashier.created_at",
+        "cashier.updated_at",
+        "profile.name",
+        "profile.user_name",
+        "profile.address",
+        "profile.email",
+        "profile.mobile_no",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
       .where("1=1");
 
     if (search) {
-      query.andWhere("cashier.name LIKE :search", { search: `%${search}%` });
+      query.andWhere("profile.name LIKE :search", { search: `%${search}%` });
     }
 
     if (filter.sbu_id) {
@@ -83,11 +105,36 @@ export class CashierService {
   }
 
   async findOne(uuid: string): Promise<PosCashier> {
-    const cashier = await this.cashierRepo.findOne({
-      where: { uuid },
-      relations: ["outlet", "sbu"],
-      withDeleted: true,
-    });
+    const cashier = await this.cashierRepo
+      .createQueryBuilder("cashier")
+      .leftJoin("cashier.profile", "profile")
+      .leftJoin("cashier.outlet", "outlet")
+      .leftJoin("cashier.sbu", "sbu")
+      .where("cashier.uuid = :uuid", { uuid })
+      .withDeleted()
+      .select([
+        "cashier.id",
+        "cashier.uuid",
+        "cashier.sbu_id",
+        "cashier.outlet_id",
+        "cashier.user_id",
+        "cashier.created_at",
+        "cashier.updated_at",
+        "profile.name",
+        "profile.user_name",
+        "profile.address",
+        "profile.email",
+        "profile.mobile_no",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
+      .getOne();
     if (!cashier) throw new NotFoundException("cashier not found");
     return cashier;
   }
