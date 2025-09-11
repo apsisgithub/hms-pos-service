@@ -226,7 +226,8 @@ export class KitchenService {
 
     const query = this.kitchenRepo
       .createQueryBuilder("kitchen")
-      .where("kitchen.deleted_at IS NULL");
+      .where("kitchen.deleted_at IS NULL")
+      .select(["kitchen.id AS value", "kitchen.name AS label"]);
 
     if (sbu_id) {
       query.andWhere("kitchen.sbu_id = :sbu_id", { sbu_id });
@@ -243,6 +244,6 @@ export class KitchenService {
       query.andWhere("kitchen.name LIKE :search", { search: `%${search}%` });
     }
 
-    return await query.orderBy("kitchen.name", "ASC").getMany();
+    return await query.orderBy("kitchen.name", "ASC").getRawMany();
   }
 }
