@@ -62,70 +62,74 @@ export class ProductService {
   async findAll(
     filter: FilterProductDto
   ): Promise<PaginatedResult<Product> | any> {
-    const { page = 1, limit = 10, search } = filter;
+    try {
+      const { page = 1, limit = 10, search } = filter;
 
-    const query = this.productRepo
-      .createQueryBuilder("product")
-      .leftJoinAndSelect("product.outlet", "outlet")
-      .leftJoinAndSelect("product.sbu", "sbu")
-      .leftJoinAndSelect("product.category", "category")
-      .where("1=1");
+      const query = this.productRepo
+        .createQueryBuilder("product")
+        .leftJoinAndSelect("product.outlet", "outlet")
+        .leftJoinAndSelect("product.sbu", "sbu")
+        .leftJoinAndSelect("product.category", "category")
+        .where("1=1");
 
-    if (search && search.trim() !== "") {
-      query.andWhere("product.name LIKE :search", { search: `%${search}%` });
+      if (search && search.trim() !== "") {
+        query.andWhere("product.name LIKE :search", { search: `%${search}%` });
+      }
+
+      if (filter.sbu_id && filter.sbu_id > 0) {
+        query.andWhere("product.sbu_id = :sbu_id", { sbu_id: filter.sbu_id });
+      }
+
+      if (filter.outlet_id && filter.outlet_id > 0) {
+        query.andWhere("product.outlet_id = :outlet_id", {
+          outlet_id: filter.outlet_id,
+        });
+      }
+
+      if (filter.category_id && filter.category_id > 0) {
+        query.andWhere("product.category_id = :category_id", {
+          category_id: filter.category_id,
+        });
+      }
+
+      if (filter.is_deleted === "Yes") {
+        query.withDeleted().andWhere("product.deleted_at IS NOT NULL");
+      } else {
+        query.andWhere("product.deleted_at IS NULL");
+      }
+
+      if (filter.is_special === "Yes") {
+        query.andWhere("product.is_special = :is_special", { is_special: 1 });
+      } else if (filter.is_special === "No") {
+        query.andWhere("product.is_special = :is_special", { is_special: 0 });
+      }
+
+      if (filter.offer_is_available === "Yes") {
+        query.andWhere("product.offer_is_available = :offer_is_available", {
+          offer_is_available: 1,
+        });
+      } else if (filter.offer_is_available === "No") {
+        query.andWhere("product.offer_is_available = :offer_is_available", {
+          offer_is_available: 0,
+        });
+      }
+
+      const [data, total] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy("product.created_at", "DESC")
+        .getManyAndCount();
+
+      return {
+        records: data,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-
-    if (filter.sbu_id && filter.sbu_id > 0) {
-      query.andWhere("product.sbu_id = :sbu_id", { sbu_id: filter.sbu_id });
-    }
-
-    if (filter.outlet_id && filter.outlet_id > 0) {
-      query.andWhere("product.outlet_id = :outlet_id", {
-        outlet_id: filter.outlet_id,
-      });
-    }
-
-    if (filter.category_id && filter.category_id > 0) {
-      query.andWhere("product.category_id = :category_id", {
-        category_id: filter.category_id,
-      });
-    }
-
-    if (filter.is_deleted === "Yes") {
-      query.withDeleted().andWhere("product.deleted_at IS NOT NULL");
-    } else {
-      query.andWhere("product.deleted_at IS NULL");
-    }
-
-    if (filter.is_special === "Yes") {
-      query.andWhere("product.is_special = :is_special", { is_special: 1 });
-    } else if (filter.is_special === "No") {
-      query.andWhere("product.is_special = :is_special", { is_special: 0 });
-    }
-
-    if (filter.offer_is_available === "Yes") {
-      query.andWhere("product.offer_is_available = :offer_is_available", {
-        offer_is_available: 1,
-      });
-    } else if (filter.offer_is_available === "No") {
-      query.andWhere("product.offer_is_available = :offer_is_available", {
-        offer_is_available: 0,
-      });
-    }
-
-    const [data, total] = await query
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy("product.created_at", "DESC")
-      .getManyAndCount();
-
-    return {
-      records: data,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    };
   }
 
   // ------------------ FIND ONE ------------------

@@ -16,7 +16,7 @@ CREATE TABLE `pos_products` (
   `offer_start_date` DATE NULL,
   `offer_end_date` DATE NULL,
   `component` TEXT NULL,
-  `Position` INT NULL,
+  `position` INT NULL,
   `kitchen_id` INT NOT NULL,
   `is_group` INT NULL,
   `is_varient` INT NOT NULL DEFAULT 0,
@@ -45,3 +45,53 @@ CREATE TABLE `pos_products` (
   CONSTRAINT `fk_products_sbu`
     FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- CREATE TABLE `pos_products` (
+--   `id` INT AUTO_INCREMENT PRIMARY KEY,
+--   `uuid` CHAR(36) NOT NULL UNIQUE,
+--   `sbu_id` INT NOT NULL,
+--   `outlet_id` INT NOT NULL,
+--   `category_id` INT,
+--   `subcategory_id` INT NOT NULL,
+--   `name` VARCHAR(255) NULL,
+--   `image` VARCHAR(200) NULL,
+--   `description` TEXT NULL,
+--   `menu_type` VARCHAR(25) NULL,
+--   `product_vat` DECIMAL(10,3) NOT NULL DEFAULT 0,
+--   `is_special` INT DEFAULT 0,
+--   `offer_rate` INT DEFAULT 0 COMMENT '1=offer rate',
+--   `offer_is_available` INT DEFAULT 0 COMMENT '1=offer available,0=No Offer',
+--   `offer_start_date` DATE NULL,
+--   `offer_end_date` DATE NULL,
+--   `component` TEXT NULL,
+--   `position` INT NULL,
+--   `kitchen_id` INT NOT NULL,
+--   `is_group` INT NULL,
+--   `is_varient` INT DEFAULT 0,
+--   `base_price` DECIMAL(10,2) NOT NULL,
+--   `discount` DECIMAL(10,2) NOT NULL,
+--   `price` DECIMAL(10,2) NOT NULL,
+--   `is_custom_qty` INT DEFAULT 0,
+--   `cooked_time` TIME NOT NULL DEFAULT '00:00:00',
+--   `is_active` TINYINT(1) NULL,
+--   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   `deleted_at` TIMESTAMP NULL,
+--   `created_by` INT NULL,
+--   `updated_by` INT NULL,
+--   `deleted_by` INT NULL,
+  
+--   -- Optional: Add foreign keys (uncomment if you want real constraints)
+--   -- FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu`(`id`),
+--   -- FOREIGN KEY (`outlet_id`) REFERENCES `outlets`(`id`),
+--   -- FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`),
+--   -- FOREIGN KEY (`subcategory_id`) REFERENCES `categories`(`id`),
+--   -- FOREIGN KEY (`kitchen_id`) REFERENCES `pos_kitchens`(`id`)
+  
+--   INDEX (`sbu_id`),
+--   INDEX (`outlet_id`),
+--   INDEX (`category_id`),
+--   INDEX (`subcategory_id`),
+--   INDEX (`kitchen_id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

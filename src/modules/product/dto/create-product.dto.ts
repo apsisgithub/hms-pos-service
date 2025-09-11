@@ -9,6 +9,7 @@ import {
   IsDate,
   IsArray,
   ValidateNested,
+  IsNotEmpty,
 } from "class-validator";
 
 // ---------- VARIANT DTO ----------
@@ -41,7 +42,7 @@ export class ProductAddonDto {
   addon_id: number;
 
   @ApiPropertyOptional({
-    example: 1.5,
+    // example: 1.5,
     description: "Override addon price (if different from default)",
   })
   @IsOptional()
@@ -59,16 +60,22 @@ export class CreateProductDto {
   @IsInt()
   outlet_id: number;
 
-  @ApiProperty({ example: 1, description: "Category ID (foreign key)" })
+  @ApiProperty({
+    // example: 1,
+    description: "Category ID (foreign key)",
+  })
   @IsInt()
   category_id: number;
 
-  @ApiProperty({ example: 1, description: "Sub Category ID (foreign key)" })
+  @ApiProperty({
+    // example: 1,
+    description: "Sub Category ID (foreign key)",
+  })
   @IsInt()
   subcategory_id: number;
 
   @ApiPropertyOptional({
-    example: "Grilled Chicken Burger",
+    // example: "Grilled Chicken Burger",
     description: "Name of the product",
   })
   @IsOptional()
@@ -76,7 +83,7 @@ export class CreateProductDto {
   name?: string;
 
   @ApiPropertyOptional({
-    example: "burger.jpg",
+    // example: "burger.jpg",
     description: "Main product image (file name or URL)",
   })
   @IsOptional()
@@ -84,7 +91,7 @@ export class CreateProductDto {
   image?: string;
 
   @ApiPropertyOptional({
-    example: "Chicken, Lettuce, Cheese, Bun",
+    // example: "Chicken, Lettuce, Cheese, Bun",
     description: "Product components or ingredients",
   })
   @IsOptional()
@@ -92,7 +99,7 @@ export class CreateProductDto {
   component?: string;
 
   @ApiPropertyOptional({
-    example: "A juicy grilled chicken burger served with fries",
+    // example: "A juicy grilled chicken burger served with fries",
     description: "Detailed description of the product",
   })
   @IsOptional()
@@ -100,7 +107,7 @@ export class CreateProductDto {
   description?: string;
 
   @ApiPropertyOptional({
-    example: "Spicy option available",
+    // example: "Spicy option available",
     description: "Additional product notes",
   })
   @IsOptional()
@@ -108,23 +115,43 @@ export class CreateProductDto {
   notes?: string;
 
   @ApiPropertyOptional({
-    example: "Dinner",
+    // example: "Dinner",
     description: "Menu type (e.g., Breakfast, Lunch, Dinner)",
   })
   @IsOptional()
   @IsString()
   menu_type?: string;
 
+  @ApiProperty({
+    description: "Product Base price",
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  base_price: number;
+
   @ApiPropertyOptional({
-    example: 15.5,
+    description: "Product discount",
+  })
+  @IsOptional()
+  @IsNumber()
+  discount: number = 0;
+
+  @ApiPropertyOptional({
+    description: "Product Sale Price after discount",
+  })
+  @IsOptional()
+  @IsNumber()
+  price: number = 0;
+
+  @ApiPropertyOptional({
     description: "Product VAT percentage",
   })
   @IsOptional()
   @IsNumber()
-  product_vat?: number;
+  product_vat: number = 0;
 
   @ApiPropertyOptional({
-    example: 1,
+    // example: 1,
     description: "Whether product is special (1 = Yes, 0 = No)",
   })
   @IsOptional()
@@ -132,7 +159,7 @@ export class CreateProductDto {
   is_special?: number;
 
   @ApiPropertyOptional({
-    example: 1,
+    // example: 1,
     description: "Offer availability (1 = Available, 0 = Not available)",
   })
   @IsOptional()
@@ -140,7 +167,7 @@ export class CreateProductDto {
   offer_is_available?: number;
 
   @ApiPropertyOptional({
-    example: "2025-09-01",
+    // example: "2025-09-01",
     description: "Offer start date",
   })
   @IsOptional()
@@ -148,7 +175,7 @@ export class CreateProductDto {
   offer_start_date?: Date;
 
   @ApiPropertyOptional({
-    example: "2025-09-10",
+    // example: "2025-09-10",
     description: "Offer end date",
   })
   @IsOptional()
@@ -156,7 +183,7 @@ export class CreateProductDto {
   offer_end_date?: Date;
 
   @ApiPropertyOptional({
-    example: 5,
+    // example: 5,
     description: "Position/order of the product in the menu",
   })
   @IsOptional()
@@ -168,7 +195,7 @@ export class CreateProductDto {
   kitchen_id: number;
 
   @ApiPropertyOptional({
-    example: 0,
+    // example: 0,
     description: "Whether product belongs to a group (1 = Yes, 0 = No)",
   })
   @IsOptional()
@@ -176,7 +203,7 @@ export class CreateProductDto {
   is_group?: number;
 
   @ApiPropertyOptional({
-    example: 1,
+    // example: 1,
     description: "Allow custom quantity (1 = Yes, 0 = No)",
   })
   @IsOptional()
@@ -184,7 +211,7 @@ export class CreateProductDto {
   is_custom_qty?: number;
 
   @ApiPropertyOptional({
-    example: "00:15:00",
+    // example: "00:15:00",
     description: "Cooked time in HH:MM:SS format",
   })
   @IsOptional()
@@ -203,11 +230,11 @@ export class CreateProductDto {
   @ApiPropertyOptional({
     type: [ProductVariantDto],
     description: "List of product variants",
-    example: [
-      { variant_name: "Small", sku: "PIZ-SM", price: 5.0 },
-      { variant_name: "Medium", sku: "PIZ-MD", price: 7.5 },
-      { variant_name: "Large", sku: "PIZ-LG", price: 10.0 },
-    ],
+    // example: [
+    //   { variant_name: "Small", sku: "PIZ-SM", price: 5.0 },
+    //   { variant_name: "Medium", sku: "PIZ-MD", price: 7.5 },
+    //   { variant_name: "Large", sku: "PIZ-LG", price: 10.0 },
+    // ],
   })
   @IsOptional()
   @IsArray()
@@ -219,10 +246,10 @@ export class CreateProductDto {
   @ApiPropertyOptional({
     type: [ProductAddonDto],
     description: "List of addons available for the product",
-    example: [
-      { addon_id: 1, extra_price: 1.5 },
-      { addon_id: 2, extra_price: 1.0 },
-    ],
+    // example: [
+    //   { addon_id: 1, extra_price: 1.5 },
+    //   { addon_id: 2, extra_price: 1.0 },
+    // ],
   })
   @IsOptional()
   @IsArray()
