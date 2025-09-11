@@ -6,6 +6,7 @@ import { FilterKitchenDto } from "./dto/filter-kitchen.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
 import { CreateKitchenDto } from "./dto/create-kitchen.dto";
 import { UpdateKitchenDto } from "./dto/update-kitchen.dto";
+import { KitchenDropdownDto } from "./dto/dropdown-kitchen.dto";
 
 @Injectable()
 export class KitchenService {
@@ -218,5 +219,30 @@ export class KitchenService {
     await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(Kitchen).delete(kitchen.id);
     });
+  }
+
+  async dropdown(filter: KitchenDropdownDto): Promise<any[]> {
+    const { sbu_id, outlet_id, search, type } = filter;
+
+    const query = this.kitchenRepo
+      .createQueryBuilder("kitchen")
+      .where("kitchen.deleted_at IS NULL");
+
+    if (sbu_id) {
+      query.andWhere("kitchen.sbu_id = :sbu_id", { sbu_id });
+    }
+
+    if (outlet_id) {
+      query.andWhere("kitchen.outlet_id = :outlet_id", { outlet_id });
+    }
+    if (type) {
+      query.andWhere("kitchen.type = :type", { type });
+    }
+
+    if (search) {
+      query.andWhere("kitchen.name LIKE :search", { search: `%${search}%` });
+    }
+
+    return await query.orderBy("kitchen.name", "ASC").getMany();
   }
 }
