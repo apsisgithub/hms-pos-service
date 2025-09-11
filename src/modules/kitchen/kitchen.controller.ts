@@ -28,6 +28,7 @@ import { FilterKitchenDto } from "./dto/filter-kitchen.dto";
 import { KitchenService } from "./kitchen.service";
 import { CreateKitchenDto } from "./dto/create-kitchen.dto";
 import { UpdateKitchenDto } from "./dto/update-kitchen.dto";
+import { KitchenDropdownDto } from "./dto/dropdown-kitchen.dto";
 
 @ApiTags("Kitchens/Stations")
 @ApiBearerAuth()
@@ -53,6 +54,11 @@ export class KitchenController {
     @Query() filter: FilterKitchenDto
   ): Promise<PaginatedResult<Kitchen> | any> {
     return this.service.findAll(filter);
+  }
+
+  @Get("/dropdown")
+  async dropdown(@Query() filter: KitchenDropdownDto): Promise<any> {
+    return await this.service.dropdown(filter);
   }
 
   @Get(":uuid")
