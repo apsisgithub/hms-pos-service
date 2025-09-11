@@ -25,7 +25,6 @@ export class WaiterService {
       const waiter = this.waiterRepo.create({
         ...dto,
         uuid: uuidv4(),
-        name: dto.name,
         created_by: userId,
       });
 

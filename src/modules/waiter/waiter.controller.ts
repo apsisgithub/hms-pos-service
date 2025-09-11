@@ -29,7 +29,7 @@ import { WaiterFilterDto } from "./dto/filter-waiter.dto";
 import { PaginatedResult } from "src/common/utils/paginated_result";
 import { JwtAuthGuard } from "src/common/guards/jwt-auth.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
-@ApiTags("Waiter")
+@ApiTags("Waiter Mapping")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller("waiters")
