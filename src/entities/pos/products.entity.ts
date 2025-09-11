@@ -103,7 +103,7 @@ export class Product {
   @Column({ name: "kitchen_id", type: "int" })
   kitchen_id: number;
 
-  @Column({ name: "is_group", type: "int", nullable: true })
+  @Column({ name: "is_group", type: "int", default: 0 })
   is_group: number | null;
 
   @Column({ name: "is_varient", type: "int", default: 0 })

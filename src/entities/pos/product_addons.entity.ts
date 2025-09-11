@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Generated,
 } from "typeorm";
 import { Product } from "./products.entity";
 import { Addon } from "./addons.entity";
@@ -15,6 +16,10 @@ import { Addon } from "./addons.entity";
 export class ProductAddon {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: "uuid", unique: true })
+  @Generated("uuid")
+  uuid: string;
 
   @Column({ type: "int" })
   product_id: number;
