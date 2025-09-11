@@ -289,6 +289,6 @@ export class CategoryService {
         }));
     };
 
-    return buildTree(null);
+    return buildTree(parent_id ?? null);
   }
 }

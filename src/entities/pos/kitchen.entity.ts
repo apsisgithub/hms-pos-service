@@ -16,6 +16,7 @@ import {
   KitchenType,
   KitchenStatus,
 } from "src/modules/kitchen/enum/kitchen.enum";
+import { MasterSbu } from "../master/master_sbu.entity";
 
 @Entity("pos_kitchens")
 export class Kitchen {
@@ -98,6 +99,10 @@ export class Kitchen {
   @ManyToOne(() => Outlet, { onDelete: "SET NULL", eager: true })
   @JoinColumn({ name: "outlet_id" })
   outlet: Outlet;
+
+  @ManyToOne(() => MasterSbu, { onDelete: "SET NULL", eager: true })
+  @JoinColumn({ name: "sbu_id" })
+  sbu: MasterSbu;
 
   // relations with products
   @OneToMany(() => Product, (product) => product.kitchen)
