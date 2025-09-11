@@ -15,7 +15,6 @@ import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
 import { ProductVariant } from "./product-varient.entity";
 import { ProductAddon } from "./product_addons.entity";
-import { ComboMeal } from "./combo_meals.entity";
 import { ComboMealProduct } from "./combo_meal_products.entity";
 import { Kitchen } from "./kitchen.entity";
 
@@ -66,7 +65,7 @@ export class Product {
   })
   product_vat: number;
 
-  @Column({ name: "special", type: "int", default: 0 })
+  @Column({ name: "is_special", type: "int", default: 0 })
   is_special: number | null;
 
   @Column({
@@ -110,13 +109,13 @@ export class Product {
   @Column({ name: "is_varient", type: "int", default: 0 })
   is_varient: number | null;
 
-  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   base_price: number;
 
-  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   discount: number;
 
-  @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   price: number;
 
   @Column({ name: "is_custom_qty", type: "int", default: 0 })
