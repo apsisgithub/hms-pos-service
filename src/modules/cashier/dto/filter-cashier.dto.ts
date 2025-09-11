@@ -1,8 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
 import {
-  IsBoolean,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -23,36 +22,25 @@ export class CashierFilterDto {
 
   @ApiProperty({
     description: "Number of records per page",
-    example: 10,
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   @Min(1)
   limit?: number;
 
-  @ApiProperty({
-    description: "Search term for waiter name or employee code",
-    example: "John",
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
-  @ApiProperty({ description: "Filter by SBU ID", example: 1, required: false })
-  @IsOptional()
+  @ApiProperty({ description: "Filter by SBU ID", required: true })
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   sbu_id?: number;
 
   @ApiProperty({
     description: "Filter by Outlet ID",
-    example: 101,
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   outlet_id?: number;
@@ -60,4 +48,12 @@ export class CashierFilterDto {
   @ApiPropertyOptional({ enum: ["Yes", "No"] })
   @IsOptional()
   is_deleted?: "Yes" | "No";
+
+  @ApiProperty({
+    description: "Search term for waiter name or employee code",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

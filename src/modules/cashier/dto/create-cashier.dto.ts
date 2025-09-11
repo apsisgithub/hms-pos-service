@@ -25,4 +25,10 @@ export class CreateCashierDto {
   @IsNumber()
   @IsInt()
   user_id: number;
+
+  @ApiProperty({ description: "ID of the Counter", example: 1 })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsInt()
+  counter_id: number;
 }
