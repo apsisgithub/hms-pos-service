@@ -16,6 +16,7 @@ import { ProductModule } from "./modules/product/product.module";
 import { ComboMealModule } from "./modules/combo-meal/combo-meal.module";
 import { KitchenModule } from "./modules/kitchen/kitchen.module";
 import { OrderModule } from "./modules/order/order.module";
+import { CashierModule } from "./modules/cashier/cashier.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { OrderModule } from "./modules/order/order.module";
     PosTableModule,
     WaiterModule,
     CounterModule,
+    CashierModule,
     KitchenModule,
     ProductModule,
     ComboMealModule,

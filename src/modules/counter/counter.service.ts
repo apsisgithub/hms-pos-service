@@ -32,6 +32,25 @@ export class CounterService {
       .createQueryBuilder("counter")
       .leftJoinAndSelect("counter.outlet", "outlet")
       .leftJoinAndSelect("counter.sbu", "sbu")
+      .select([
+        "counter.id",
+        "counter.uuid",
+        "counter.sbu_id",
+        "counter.outlet_id",
+        "counter.name",
+        "counter.location",
+        "counter.description",
+        "counter.created_at",
+        "counter.updated_at",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
       .where("1=1");
 
     if (search && search.trim() !== "") {
@@ -69,11 +88,32 @@ export class CounterService {
     };
   }
 
-  async findOne(uuid: string): Promise<PosCounter> {
-    const counter = await this.counterRepo.findOne({
-      where: { uuid },
-      relations: ["sbu", "outlet"],
-    });
+  async findOne(uuid: string): Promise<any> {
+    const counter = this.counterRepo
+      .createQueryBuilder("counter")
+      .leftJoinAndSelect("counter.outlet", "outlet")
+      .leftJoinAndSelect("counter.sbu", "sbu")
+      .select([
+        "counter.id",
+        "counter.uuid",
+        "counter.sbu_id",
+        "counter.outlet_id",
+        "counter.name",
+        "counter.location",
+        "counter.description",
+        "counter.created_at",
+        "counter.updated_at",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
+      .where("counter.uuid = :uuid", { uuid })
+      .getOne();
     if (!counter) throw new NotFoundException(`Counter ${uuid} not found`);
     return counter;
   }

@@ -5,6 +5,7 @@ import {
   Min,
   IsNumber,
   IsBoolean,
+  IsNotEmpty,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { ApiPropertyOptional } from "@nestjs/swagger";
@@ -35,29 +36,19 @@ export class CounterFilterDto {
   limit: number = 10;
 
   @ApiPropertyOptional({
-    description: "Search by counter name",
-    example: "Front Counter",
-  })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
-  @ApiPropertyOptional({
     description: "Filter by SBU ID",
-    example: 1,
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   sbu_id?: number;
 
   @ApiPropertyOptional({
     description: "Filter by Outlet ID",
-    example: 1,
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   outlet_id?: number;
@@ -75,4 +66,11 @@ export class CounterFilterDto {
   })
   @IsBoolean()
   is_deleted?: boolean | string;
+
+  @ApiPropertyOptional({
+    description: "Search by counter name",
+  })
+  @IsOptional()
+  @IsString()
+  search?: string;
 }
