@@ -50,6 +50,8 @@ export class CashierController {
       if (!userId) {
         throw new UnauthorizedException(`Sorry! unauthorized`);
       }
+      //check before already exist by id
+
       return await this.cashierService.create(dto, +userId);
     } catch (error) {
       throw new BadRequestException(error.message);
