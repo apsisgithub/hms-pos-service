@@ -13,9 +13,10 @@ import {
 import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
 import { MasterUser } from "../master/master_user.entity";
+import { PosCounter } from "./counter.entity";
 
-@Entity("pos_waiters")
-export class Waiter {
+@Entity("pos_cashiers")
+export class PosCashier {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,6 +32,9 @@ export class Waiter {
 
   @Column({ type: "int" })
   user_id: number;
+
+  @Column({ type: "int" })
+  counter_id: number;
 
   @CreateDateColumn({ name: "created_at", type: "timestamp" })
   created_at: Date;
@@ -58,7 +62,11 @@ export class Waiter {
   @JoinColumn({ name: "sbu_id" })
   sbu: MasterSbu;
 
-  @OneToOne(() => MasterUser, (user) => user.waiter)
+  @OneToOne(() => MasterUser, (user) => user.cashier)
   @JoinColumn({ name: "user_id" })
   profile: MasterUser;
+
+  @OneToOne(() => PosCounter, (counter) => counter.cashier)
+  @JoinColumn({ name: "counter_id" })
+  counter: PosCounter;
 }

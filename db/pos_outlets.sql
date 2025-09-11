@@ -20,3 +20,5 @@ CREATE TABLE `pos_outlets` (
     FOREIGN KEY (`sbu_id`) REFERENCES `master_sbu`(`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ 
