@@ -40,12 +40,37 @@ export class WaiterService {
 
     const query = this.waiterRepo
       .createQueryBuilder("waiter")
-      // .leftJoinAndSelect("waiter.outlet", "outlet")
-      // .leftJoinAndSelect("waiter.sbu", "sbu")
+      .leftJoinAndSelect("waiter.profile", "profile")
+      .leftJoinAndSelect("waiter.outlet", "outlet")
+      .leftJoinAndSelect("waiter.sbu", "sbu")
+      .select([
+        "waiter.id",
+        "waiter.uuid",
+        "waiter.sbu_id",
+        "waiter.outlet_id",
+        "waiter.user_id",
+        "waiter.created_at",
+        "waiter.updated_at",
+        "profile.name",
+        "profile.user_name",
+        "profile.address",
+        "profile.email",
+        "profile.mobile_no",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
       .where("1=1");
 
     if (search) {
-      query.andWhere("waiter.name LIKE :search", { search: `%${search}%` });
+      query.andWhere("profile.name LIKE :search", {
+        search: `%${search}%`,
+      });
     }
 
     if (filter.sbu_id) {
@@ -80,11 +105,36 @@ export class WaiterService {
   }
 
   async findOne(uuid: string): Promise<Waiter> {
-    const waiter = await this.waiterRepo.findOne({
-      where: { uuid },
-      relations: ["outlet", "sbu"],
-      withDeleted: true,
-    });
+    const waiter = await this.waiterRepo
+      .createQueryBuilder("waiter")
+      .leftJoin("waiter.profile", "profile")
+      .leftJoin("waiter.outlet", "outlet")
+      .leftJoin("waiter.sbu", "sbu")
+      .where("waiter.uuid = :uuid", { uuid })
+      .withDeleted()
+      .select([
+        "waiter.id",
+        "waiter.uuid",
+        "waiter.sbu_id",
+        "waiter.outlet_id",
+        "waiter.user_id",
+        "waiter.created_at",
+        "waiter.updated_at",
+        "profile.name",
+        "profile.user_name",
+        "profile.address",
+        "profile.email",
+        "profile.mobile_no",
+        "outlet.name",
+        "outlet.phone",
+        "outlet.location",
+        "outlet.logo",
+        "sbu.name",
+        "sbu.address",
+        "sbu.email",
+        "sbu.logo_name",
+      ])
+      .getOne();
     if (!waiter) throw new NotFoundException("Waiter not found");
     return waiter;
   }

@@ -12,6 +12,7 @@ import { MasterUserAccessibleSbu } from "./master_user_accessible_sbu.entity";
 import { MasterUserActivityLog } from "./master_user_activity_log.entity";
 import { CoreEntity } from "src/utils/core-entity";
 import { UserPermission } from "./master_user_permission.entity";
+import { PosCashier } from "../pos/cashier.entity";
 
 export enum UserStatus {
   Active = "Active",
@@ -123,6 +124,9 @@ export class MasterUser extends CoreEntity {
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   permissions: UserPermission[];
 
-  @OneToOne(() => Waiter, (waiter) => waiter.user)
+  @OneToOne(() => Waiter, (waiter) => waiter.profile)
   waiter: Waiter;
+
+  @OneToOne(() => PosCashier, (cashier) => cashier.profile)
+  cashier: PosCashier;
 }

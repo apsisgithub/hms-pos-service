@@ -7,10 +7,12 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToOne,
 } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { MasterSbu } from "../master/master_sbu.entity";
 import { Outlet } from "./outlet.entity";
+import { PosCashier } from "./cashier.entity";
 
 @Entity("pos_counters")
 export class PosCounter {
@@ -79,4 +81,7 @@ export class PosCounter {
   })
   @JoinColumn({ name: "outlet_id" })
   outlet?: Outlet;
+
+  @OneToOne(() => PosCashier, (cashier) => cashier.counter)
+  cashier: PosCashier;
 }
