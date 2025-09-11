@@ -1,4 +1,12 @@
-import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import { Waiter } from "src/entities/pos/waiter.entity";
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
+} from "typeorm";
 import { MasterRole } from "src/entities/master/master_roles.entity";
 import { MasterUserAccessibleSbu } from "./master_user_accessible_sbu.entity";
 import { MasterUserActivityLog } from "./master_user_activity_log.entity";
@@ -114,4 +122,7 @@ export class MasterUser extends CoreEntity {
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   permissions: UserPermission[];
+
+  @OneToOne(() => Waiter, (waiter) => waiter.user)
+  waiter: Waiter;
 }
